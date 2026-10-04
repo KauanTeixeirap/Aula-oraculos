@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E2E Test Runner — Plataforma de Oráculos em Blockchain</title>
+  <style>
+    :root {
+      --bg-dark: #0a0e17;
+      --card-bg: rgba(16, 24, 40, 0.85);
+      --border-color: rgba(56, 189, 248, 0.2);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --cyan: #38bdf8;
+      --purple: #a855f7;
+      --emerald: #10b981;
+      --rose: #f43f5e;
+      --amber: #f59e0b;
+      --font-mono: 'Fira Code', 'JetBrains Mono', Consolas, monospace;
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 10% 10%, rgba(56, 189, 248, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 90% 90%, rgba(168, 85, 247, 0.08) 0%, transparent 40%);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      padding: 2rem;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 2rem;
+    }
+
+    .brand-title {
+      font-size: 1.75rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--cyan), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .brand-subtitle {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-top: 0.25rem;
+    }
+
+    .actions {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #0284c7, #7c3aed);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 0.65rem 1.5rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.45);
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    /* KPI Summary Cards */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    .kpi-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem;
+      backdrop-filter: blur(12px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--border-color);
+    }
+
+    .kpi-card.total::before { background: var(--cyan); }
+    .kpi-card.passed::before { background: var(--emerald); }
+    .kpi-card.failed::before { background: var(--rose); }
+    .kpi-card.time::before { background: var(--amber); }
+
+    .kpi-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .kpi-value {
+      font-size: 2.25rem;
+      font-weight: 800;
+      margin-top: 0.25rem;
+      font-family: var(--font-mono);
+    }
+
+    .kpi-card.passed .kpi-value { color: var(--emerald); }
+    .kpi-card.failed .kpi-value { color: var(--rose); }
+    .kpi-card.time .kpi-value { color: var(--amber); font-size: 1.85rem; }
+
+    /* Progress Bar */
+    .progress-wrapper {
+      margin-bottom: 2rem;
+    }
+
+    .progress-bar-bg {
+      height: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--cyan), var(--emerald));
+      transition: width 0.3s ease;
+    }
+
+    /* Filters Bar */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-muted);
+      padding: 0.4rem 0.85rem;
+      font-size: 0.85rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.15s ease;
+    }
+
+    .filter-btn:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .filter-btn.active {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: var(--cyan);
+      color: var(--cyan);
+      font-weight: 600;
+    }
+
+    select.filter-select {
+      background: rgba(16, 24, 40, 0.95);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.4rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    /* Test Suites and Rows */
+    .suites-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .suite-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      overflow: hidden;
+      backdrop-filter: blur(8px);
+    }
+
+    .suite-header {
+      padding: 0.85rem 1.25rem;
+      background: rgba(255, 255, 255, 0.02);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .suite-title {
+      font-weight: 700;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-family: var(--font-mono);
+    }
+
+    .badge-tier { background: rgba(168, 85, 247, 0.2); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
+    .badge-feat { background: rgba(56, 189, 248, 0.2); color: #7dd3fc; border: 1px solid rgba(56, 189, 248, 0.3); }
+    .badge-pass { background: rgba(16, 189, 129, 0.2); color: #34d399; }
+    .badge-fail { background: rgba(244, 63, 94, 0.2); color: #fb7185; }
+
+    .test-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .test-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1.25rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      font-size: 0.9rem;
+      transition: background 0.15s ease;
+    }
+
+    .test-row:last-child {
+      border-bottom: none;
+    }
+
+    .test-row:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .test-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex: 1;
+    }
+
+    .test-title {
+      color: var(--text-main);
+    }
+
+    .test-error {
+      margin: 0.5rem 1.25rem 1rem 1.25rem;
+      padding: 0.85rem;
+      background: rgba(244, 63, 94, 0.1);
+      border-left: 3px solid var(--rose);
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: #fca5a5;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .footer {
+      margin-top: 3rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1 class="brand-title">
+          <span>⚡</span> E2E Test Suite & Dashboard
+        </h1>
+        <p class="brand-subtitle">
+          Plataforma Interativa de Oráculos em Blockchain — Tiers 1-4 (F01 a F22)
+        </p>
+      </div>
+      <div class="actions">
+        <button id="btn-run-all" class="btn">
+          <span>▶</span> Executar Todos os Testes
+        </button>
+      </div>
+    </header>
+
+    <!-- KPI Cards -->
+    <div class="kpi-grid">
+      <div class="kpi-card total">
+        <div class="kpi-label">Total de Testes</div>
+        <div id="kpi-total" class="kpi-value">0</div>
+      </div>
+      <div class="kpi-card passed">
+        <div class="kpi-label">Aprovados (Pass)</div>
+        <div id="kpi-passed" class="kpi-value">0</div>
+      </div>
+      <div class="kpi-card failed">
+        <div class="kpi-label">Falhas (Fail)</div>
+        <div id="kpi-failed" class="kpi-value">0</div>
+      </div>
+      <div class="kpi-card time">
+        <div class="kpi-label">Tempo de Execução</div>
+        <div id="kpi-time" class="kpi-value">0 ms</div>
+      </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="progress-wrapper">
+      <div class="progress-bar-bg">
+        <div id="progress-bar" class="progress-bar-fill"></div>
+      </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+      <div class="filter-group">
+        <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">Tier:</span>
+        <button class="filter-btn active" data-tier="all">Todos (253)</button>
+        <button class="filter-btn" data-tier="1">Tier 1: Features (110)</button>
+        <button class="filter-btn" data-tier="2">Tier 2: Bordas (110)</button>
+        <button class="filter-btn" data-tier="3">Tier 3: Cruzados (22)</button>
+        <button class="filter-btn" data-tier="4">Tier 4: Jornadas (11)</button>
+      </div>
+
+      <div class="filter-group">
+        <label for="filter-status" style="font-size: 0.85rem; color: var(--text-muted);">Status:</label>
+        <select id="filter-status" class="filter-select">
+          <option value="all">Todos os Status</option>
+          <option value="passed">Apenas Aprovados</option>
+          <option value="failed">Apenas Falhas</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Suites Container -->
+    <div id="suites-list" class="suites-container"></div>
+
+    <div class="footer">
+      <p>Inteli Módulo 3 — Atividade Nº 10 (Aula Técnica: 05/10/2026) | Test Architecture M0</p>
+    </div>
+  </div>
+
+  <!-- Test Harness & Specs -->
+  <script src="./test_harness.js"></script>
+  <script src="./e2e_spec.js"></script>
+
+  <script>
+    (function () {
+      const harness = window.TestHarness;
+      let lastRunResults = null;
+      let currentTierFilter = 'all';
+      let currentStatusFilter = 'all';
+
+      const kpiTotal = document.getElementById('kpi-total');
+      const kpiPassed = document.getElementById('kpi-passed');
+      const kpiFailed = document.getElementById('kpi-failed');
+      const kpiTime = document.getElementById('kpi-time');
+      const progressBar = document.getElementById('progress-bar');
+      const suitesList = document.getElementById('suites-list');
+      const btnRunAll = document.getElementById('btn-run-all');
+      const filterStatus = document.getElementById('filter-status');
+      const tierButtons = document.querySelectorAll('[data-tier]');
+
+      tierButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          tierButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentTierFilter = btn.getAttribute('data-tier');
+          renderResults();
+        });
+      });
+
+      filterStatus.addEventListener('change', (e) => {
+        currentStatusFilter = e.target.value;
+        renderResults();
+      });
+
+      btnRunAll.addEventListener('click', runAll);
+
+      async function runAll() {
+        btnRunAll.disabled = true;
+        btnRunAll.innerHTML = '<span>⏳</span> Executando...';
+        progressBar.style.width = '0%';
+
+        lastRunResults = await harness.run((progress) => {
+          const pct = Math.round((progress.executed / progress.total) * 100);
+          progressBar.style.width = pct + '%';
+          kpiTotal.textContent = progress.executed;
+          kpiPassed.textContent = progress.passed;
+          kpiFailed.textContent = progress.failed;
+        });
+
+        kpiTotal.textContent = lastRunResults.total;
+        kpiPassed.textContent = lastRunResults.passed;
+        kpiFailed.textContent = lastRunResults.failed;
+        kpiTime.textContent = lastRunResults.duration + ' ms';
+
+        btnRunAll.disabled = false;
+        btnRunAll.innerHTML = '<span>▶</span> Executar Novamente';
+        renderResults();
+      }
+
+      function renderResults() {
+        if (!lastRunResults) return;
+
+        suitesList.innerHTML = '';
+
+        // Group results by suiteTitle
+        const suitesMap = new Map();
+        for (const r of lastRunResults.results) {
+          // Filter by Tier
+          if (currentTierFilter !== 'all' && String(r.tier) !== String(currentTierFilter)) continue;
+          // Filter by Status
+          if (currentStatusFilter === 'passed' && r.status !== 'PASSED') continue;
+          if (currentStatusFilter === 'failed' && r.status !== 'FAILED') continue;
+
+          if (!suitesMap.has(r.suiteTitle)) {
+            suitesMap.set(r.suiteTitle, []);
+          }
+          suitesMap.get(r.suiteTitle).push(r);
+        }
+
+        if (suitesMap.size === 0) {
+          suitesList.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 2rem;">Nenhum teste correspondente aos filtros selecionados.</div>';
+          return;
+        }
+
+        for (const [suiteTitle, tests] of suitesMap.entries()) {
+          const card = document.createElement('div');
+          card.className = 'suite-card';
+
+          const allPass = tests.every(t => t.status === 'PASSED');
+          const feat = tests[0]?.feature || 'GLOBAL';
+          const tier = tests[0]?.tier || 1;
+
+          card.innerHTML = `
+            <div class="suite-header">
+              <div class="suite-title">
+                <span>${allPass ? '🟢' : '🔴'}</span>
+                <span>${suiteTitle}</span>
+                <span class="badge badge-tier">Tier ${tier}</span>
+                <span class="badge badge-feat">${feat}</span>
+              </div>
+              <span class="badge ${allPass ? 'badge-pass' : 'badge-fail'}">
+                ${tests.filter(t => t.status === 'PASSED').length}/${tests.length} PASS
+              </span>
+            </div>
+            <div class="test-list">
+              ${tests.map(t => `
+                <div class="test-row">
+                  <div class="test-info">
+                    <span>${t.status === 'PASSED' ? '✔' : '✖'}</span>
+                    <span class="test-title">${t.title}</span>
+                  </div>
+                  <div style="display: flex; gap: 0.5rem; align-items: center;">
+                    <span style="font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono);">${t.duration}ms</span>
+                    <span class="badge ${t.status === 'PASSED' ? 'badge-pass' : 'badge-fail'}">${t.status}</span>
+                  </div>
+                </div>
+                ${t.error ? `<div class="test-error">${t.error}</div>` : ''}
+              `).join('')}
+            </div>
+          `;
+
+          suitesList.appendChild(card);
+        }
+      }
+
+      // Auto-run on load
+      runAll();
+    })();
+  </script>
+</body>
+</html>

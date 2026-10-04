@@ -1,0 +1,191 @@
+--- a/estudo_oraculos/src/state/store.js
++++ b/estudo_oraculos/src/state/store.js
+@@ -6,6 +6,11 @@
+ 
+ const STORAGE_KEY = 'oraculos_study_progress_v1';
+ 
++const DEFAULT_CONCEPT_IDS = [
++  'NODE_01', 'NODE_02', 'NODE_03', 'NODE_04', 'NODE_05',
++  'NODE_06', 'NODE_07', 'NODE_08', 'NODE_09'
++];
++
+ class Store {
+   constructor() {
+     this._state = {
+@@ -20,6 +25,7 @@
+ 
+     this._listeners = new Set();
+     this._conceptsMap = new Map();
++    this._manualUnlockedNodes = new Set();
+     this._loadFromStorage();
+   }
+ 
+@@ -29,7 +35,17 @@
+    */
+   registerConcepts(concepts) {
+     if (Array.isArray(concepts)) {
+-      concepts.forEach(c => this._conceptsMap.set(c.id, c));
++      this._conceptsMap.clear();
++      concepts.forEach(c => {
++        if (c && typeof c === 'object' && typeof c.id === 'string' && c.id.trim() !== '') {
++          this._conceptsMap.set(c.id, {
++            ...c,
++            prerequisites: Array.isArray(c.prerequisites)
++              ? c.prerequisites.filter(p => typeof p === 'string')
++              : []
++          });
++        }
++      });
+       this._recalculateUnlockedNodes();
+     }
+   }
+@@ -48,8 +64,8 @@
+    */
+   getState() {
+     return Object.freeze({
+-      unlockedNodes: [...this._state.unlockedNodes],
+-      completedNodes: [...this._state.completedNodes],
++      unlockedNodes: Object.freeze([...this._state.unlockedNodes]),
++      completedNodes: Object.freeze([...this._state.completedNodes]),
+       teacherMode: Boolean(this._state.teacherMode),
+       selectedNodeId: this._state.selectedNodeId,
+       filterLevel: this._state.filterLevel,
+@@ -79,24 +95,28 @@
+    * @param {Record<string, any>} [payload={}]
+    */
+   dispatch(action, payload = {}) {
++    const safePayload = (payload !== null && typeof payload === 'object') ? payload : {};
+     let stateChanged = false;
+ 
+     switch (action) {
+       case 'UNLOCK_NODE': {
+-        const { nodeId } = payload;
+-        if (nodeId && !this._state.unlockedNodes.includes(nodeId)) {
+-          this._state.unlockedNodes.push(nodeId);
+-          stateChanged = true;
++        const nodeId = safePayload.nodeId;
++        if (typeof nodeId === 'string' && nodeId.trim() !== '') {
++          this._manualUnlockedNodes.add(nodeId);
++          if (!this._state.unlockedNodes.includes(nodeId)) {
++            this._recalculateUnlockedNodes();
++            stateChanged = true;
++          }
+         }
+         break;
+       }
+ 
+       case 'COMPLETE_NODE': {
+-        const { nodeId } = payload;
+-        if (nodeId && !this._state.completedNodes.includes(nodeId)) {
++        const nodeId = safePayload.nodeId;
++        if (typeof nodeId === 'string' && nodeId.trim() !== '' && !this._state.completedNodes.includes(nodeId)) {
+           this._state.completedNodes.push(nodeId);
+-          if (!this._state.unlockedNodes.includes(nodeId)) {
+-            this._state.unlockedNodes.push(nodeId);
+-          }
+           this._recalculateUnlockedNodes();
+           stateChanged = true;
+           this._saveToStorage();
+@@ -106,8 +126,8 @@
+       }
+ 
+       case 'UNCOMPLETE_NODE': {
+-        const { nodeId } = payload;
+-        if (nodeId && this._state.completedNodes.includes(nodeId)) {
++        const nodeId = safePayload.nodeId;
++        if (typeof nodeId === 'string' && this._state.completedNodes.includes(nodeId)) {
+           this._state.completedNodes = this._state.completedNodes.filter(id => id !== nodeId);
+           this._recalculateUnlockedNodes();
+           stateChanged = true;
+@@ -117,9 +137,10 @@
+       }
+ 
+       case 'SET_TEACHER_MODE': {
+-        const enabled = Boolean(payload.enabled);
++        const enabled = Boolean(safePayload.enabled);
+         if (this._state.teacherMode !== enabled) {
+           this._state.teacherMode = enabled;
++          this._recalculateUnlockedNodes();
+           stateChanged = true;
+           this._saveToStorage();
+         }
+@@ -127,15 +148,15 @@
+       }
+ 
+       case 'SELECT_NODE': {
+-        const nodeId = payload.nodeId ?? null;
++        const nodeId = (typeof safePayload.nodeId === 'string' && safePayload.nodeId.trim() !== '') ? safePayload.nodeId : null;
+         if (this._state.selectedNodeId !== nodeId) {
+           this._state.selectedNodeId = nodeId;
+           stateChanged = true;
+         }
+         break;
+       }
+ 
+       case 'SET_FILTER': {
+-        const { key, value } = payload;
++        const { key, value } = safePayload;
+         if (key === 'level' && typeof value === 'string' && this._state.filterLevel !== value) {
+           this._state.filterLevel = value;
+           stateChanged = true;
+         } else if (key === 'difficulty' && typeof value === 'string' && this._state.filterDifficulty !== value) {
+           this._state.filterDifficulty = value;
+           stateChanged = true;
+         } else if (key === 'search') {
+-          this._state.searchQuery = value ?? '';
+-          stateChanged = true;
++          const valStr = typeof value === 'string' ? value : (value == null ? '' : String(value));
++          if (this._state.searchQuery !== valStr) {
++            this._state.searchQuery = valStr;
++            stateChanged = true;
++          }
+         }
+         break;
+       }
+ 
+       case 'RESET_PROGRESS': {
+         this._state.completedNodes = [];
++        this._manualUnlockedNodes.clear();
+         this._state.unlockedNodes = ['NODE_01'];
+         this._recalculateUnlockedNodes();
+         stateChanged = true;
+@@ -173,6 +194,15 @@
+    * Recalculates unlocked nodes based on registered concept prerequisites
+    */
+   _recalculateUnlockedNodes() {
++    if (this._state.teacherMode) {
++      const allConcepts = this._conceptsMap.size > 0
++        ? Array.from(this._conceptsMap.keys())
++        : [...DEFAULT_CONCEPT_IDS];
++      this._state.unlockedNodes = allConcepts;
++      return;
++    }
++
+     const unlocked = new Set(['NODE_01']);
++    this._manualUnlockedNodes.forEach(id => unlocked.add(id));
+     this._state.completedNodes.forEach(id => unlocked.add(id));
+ 
+     if (this._conceptsMap.size > 0) {
+@@ -213,9 +243,12 @@
+         const raw = window.localStorage.getItem(STORAGE_KEY);
+         if (raw) {
+           const parsed = JSON.parse(raw);
+-          if (Array.isArray(parsed.completedNodes)) {
+-            this._state.completedNodes = parsed.completedNodes;
+-          }
+-          if (typeof parsed.teacherMode === 'boolean') {
+-            this._state.teacherMode = parsed.teacherMode;
+-          }
+-          this._recalculateUnlockedNodes();
++          if (parsed && typeof parsed === 'object') {
++            if (Array.isArray(parsed.completedNodes)) {
++              this._state.completedNodes = parsed.completedNodes
++                .filter(id => typeof id === 'string' && id.trim() !== '');
++            }
++            if (typeof parsed.teacherMode === 'boolean') {
++              this._state.teacherMode = parsed.teacherMode;
++            }
++            this._recalculateUnlockedNodes();
++          }
+         }
+       }

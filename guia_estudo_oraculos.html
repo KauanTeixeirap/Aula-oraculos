@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guia Interativo: Oráculos & Integração Blockchain</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090d16;
+      --surface: #111827;
+      --surface-hover: #1f2937;
+      --surface-card: rgba(17, 24, 39, 0.7);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(59, 130, 246, 0.3);
+      --primary: #3b82f6;
+      --primary-glow: rgba(59, 130, 246, 0.25);
+      --accent: #8b5cf6;
+      --emerald: #10b981;
+      --emerald-glow: rgba(16, 185, 129, 0.2);
+      --amber: #f59e0b;
+      --rose: #ef4444;
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --text-dim: #6b7280;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* Ambient Glow Background */
+    .ambient-bg {
+      position: fixed;
+      top: -20%;
+      left: 10%;
+      width: 80vw;
+      height: 60vh;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.12) 0%, rgba(139, 92, 246, 0.08) 40%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(9, 13, 22, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .brand-badge {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: white;
+      box-shadow: 0 4px 15px var(--primary-glow);
+    }
+
+    .brand h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand span {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .badge-event {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.25);
+      padding: 0.35rem 0.85rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      color: #93c5fd;
+      font-weight: 600;
+    }
+
+    .main-layout {
+      position: relative;
+      z-index: 10;
+      flex: 1;
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      max-width: 1600px;
+      width: 100%;
+      margin: 0 auto;
+      height: calc(100vh - 73px);
+    }
+
+    @media (max-width: 980px) {
+      .main-layout {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
+    }
+
+    /* Left Sidebar: Tree / Nodes */
+    .tree-sidebar {
+      border-right: 1px solid var(--border);
+      background: rgba(13, 18, 30, 0.6);
+      backdrop-filter: blur(10px);
+      padding: 1.5rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .tree-header h2 {
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+    }
+
+    .tree-header p {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+    }
+
+    .level-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .level-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #60a5fa;
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .level-label::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .node-btn {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.85rem;
+      padding: 0.85rem 1rem;
+      border-radius: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      cursor: pointer;
+      text-align: left;
+      font-family: inherit;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .node-btn:hover {
+      background: var(--surface-hover);
+      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateY(-1px);
+    }
+
+    .node-btn.active {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.15));
+      border-color: var(--primary);
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+    }
+
+    .node-btn.active::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 15%;
+      bottom: 15%;
+      width: 4px;
+      background: var(--primary);
+      border-radius: 0 4px 4px 0;
+    }
+
+    .node-icon {
+      font-size: 1.15rem;
+      line-height: 1;
+      padding-top: 2px;
+    }
+
+    .node-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .node-sub {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+    }
+
+    /* Main Content Area */
+    .content-area {
+      overflow-y: auto;
+      padding: 2.5rem 3rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .content-area {
+        padding: 1.5rem;
+      }
+    }
+
+    .content-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .content-card h2 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .tag {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      background: rgba(59, 130, 246, 0.15);
+      color: #93c5fd;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .lead-text {
+      font-size: 1.05rem;
+      color: #cbd5e1;
+      margin-bottom: 1.5rem;
+      line-height: 1.7;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+      margin: 1.5rem 0;
+    }
+
+    .info-box {
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+
+    .info-box.highlight {
+      border-color: rgba(59, 130, 246, 0.4);
+      background: rgba(59, 130, 246, 0.05);
+    }
+
+    .info-box.warning {
+      border-color: rgba(245, 158, 11, 0.4);
+      background: rgba(245, 158, 11, 0.05);
+    }
+
+    .info-box h3 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #e2e8f0;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .info-box p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    /* Interactive Simulators */
+    .sim-container {
+      background: #0d121f;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 14px;
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .sim-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sim-header h4 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #93c5fd;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .sim-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .sim-btn:hover {
+      background: #2563eb;
+      box-shadow: 0 4px 12px var(--primary-glow);
+    }
+
+    /* Consensus Break Sim Graphic */
+    .nodes-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin: 1.25rem 0;
+    }
+
+    .validator-node {
+      background: rgba(17, 24, 39, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .validator-node.diverged {
+      border-color: var(--rose);
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    .validator-node.agreed {
+      border-color: var(--emerald);
+      background: rgba(16, 185, 129, 0.1);
+    }
+
+    .node-header-text {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .node-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .sim-status-box {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    /* Code Block */
+    .code-block {
+      background: #080c14;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-top: 1.5rem;
+    }
+
+    .code-header {
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid var(--border);
+      padding: 0.6rem 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .copy-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .copy-btn:hover {
+      background: var(--surface-hover);
+      color: #fff;
+    }
+
+    pre code {
+      display: block;
+      padding: 1.25rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: #cbd5e1;
+      overflow-x: auto;
+      line-height: 1.6;
+    }
+
+    .code-keyword { color: #f472b6; font-weight: 600; }
+    .code-type { color: #60a5fa; }
+    .code-fn { color: #34d399; }
+    .code-comment { color: #64748b; font-style: italic; }
+
+    /* Didactic Tips for teaching */
+    .didactic-box {
+      margin-top: 1.5rem;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(59, 130, 246, 0.05));
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+
+    .didactic-box h4 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #c084fc;
+      margin-bottom: 0.4rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .didactic-box p {
+      font-size: 0.85rem;
+      color: #cbd5e1;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="ambient-bg"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="brand">
+      <div class="brand-badge">⚡</div>
+      <div>
+        <h1>Oráculos & Dados Externos na Blockchain</h1>
+        <span>Guia Rápido de Estudos — Aula Técnica Inteli</span>
+      </div>
+    </div>
+    <div class="badge-event">
+      📅 Aula: 05/10/2026 • Ateliê Inteli
+    </div>
+  </header>
+
+  <!-- Layout -->
+  <div class="main-layout">
+    <!-- Sidebar: Árvore de Dependências -->
+    <aside class="tree-sidebar">
+      <div class="tree-header">
+        <h2>Árvore de Aprendizado</h2>
+        <p>Selecione um tópico para desbloquear os conceitos, simulações visuais e código.</p>
+      </div>
+
+      <!-- Nível 0 -->
+      <div class="level-group">
+        <div class="level-label">Nível 0 • Fundamentos</div>
+        <button class="node-btn active" data-node="evm-determinismo">
+          <div class="node-icon">🔒</div>
+          <div>
+            <div class="node-title">Determinismo & Sandboxing</div>
+            <div class="node-sub">Por que a EVM é isolada do mundo</div>
+          </div>
+        </button>
+      </div>
+
+      <!-- Nível 1 -->
+      <div class="level-group">
+        <div class="level-label">Nível 1 • O Problema</div>
+        <button class="node-btn" data-node="problema-oraculo">
+          <div class="node-icon">⚠️</div>
+          <div>
+            <div class="node-title">O Problema do Oráculo</div>
+            <div class="node-sub">Por que HTTP quebra o consenso</div>
+          </div>
+        </button>
+      </div>
+
+      <!-- Nível 2 -->
+      <div class="level-group">
+        <div class="level-label">Nível 2 • Arquitetura</div>
+        <button class="node-btn" data-node="push-vs-pull">
+          <div class="node-icon">🔄</div>
+          <div>
+            <div class="node-title">Modelos Push vs. Pull</div>
+            <div class="node-sub">Feeds periódicos vs. Callbacks</div>
+          </div>
+        </button>
+        <button class="node-btn" data-node="don-descentralizacao">
+          <div class="node-icon">🌐</div>
+          <div>
+            <div class="node-title">DONs & Agregação</div>
+            <div class="node-sub">Consenso off-chain e medianas</div>
+          </div>
+        </button>
+      </div>
+
+      <!-- Nível 3 -->
+      <div class="level-group">
+        <div class="level-label">Nível 3 • Casos de Uso</div>
+        <button class="node-btn" data-node="data-feeds-defi">
+          <div class="node-icon">📈</div>
+          <div>
+            <div class="node-title">Price Feeds em DeFi</div>
+            <div class="node-sub">Aave, liquidações e heartbeat</div>
+          </div>
+        </button>
+        <button class="node-btn" data-node="vrf-randomness">
+          <div class="node-icon">🎲</div>
+          <div>
+            <div class="node-title">Aleatoriedade Verificável (VRF)</div>
+            <div class="node-sub">Sorteios justos sem manipulação</div>
+          </div>
+        </button>
+        <button class="node-btn" data-node="automation-keepers">
+          <div class="node-icon">⚙️</div>
+          <div>
+            <div class="node-title">Automação & Keepers</div>
+            <div class="node-sub">Smart contracts acordando sozinhos</div>
+          </div>
+        </button>
+      </div>
+
+      <!-- Nível 4 -->
+      <div class="level-group">
+        <div class="level-label">Nível 4 • Hands-On</div>
+        <button class="node-btn" data-node="remix-hands-on">
+          <div class="node-icon">💻</div>
+          <div>
+            <div class="node-title">Prática no Remix (Solidity)</div>
+            <div class="node-sub">Código pronto para apresentar na aula</div>
+          </div>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="content-area" id="content-container">
+      <!-- Dinamicamente preenchido pelo JS -->
+    </main>
+  </div>
+
+  <script>
+    // Base de Conteúdos da Árvore
+    const CONTENT_DATA = {
+      'evm-determinismo': {
+        tag: 'Nível 0 • Base Essencial',
+        title: '🔒 Determinismo & O Sandbox da Blockchain',
+        lead: 'Smart contracts rodam dentro de uma máquina virtual estritamente determinística (EVM). Isso significa que, dada exatamente a mesma transação no bloco X, 10.000 nós ao redor do mundo devem calcular rigorosamente o mesmo resultado estado a estado.',
+        infoBoxes: [
+          {
+            title: 'O que é Determinismo?',
+            desc: '2 + 2 deve ser sempre 4 em qualquer computador, em qualquer fuso horário e sob qualquer latência de rede. Sem determinismo absoluto, nós chegariam a conclusões diferentes e a blockchain entraria em fork (divisão).'
+          },
+          {
+            title: 'Isolamento (Sandboxing)',
+            desc: 'O ambiente da EVM não tem acesso a portas de rede, relógio do sistema operacional (apenas timestamps de blocos validados) ou discos rígidos locais.'
+          }
+        ],
+        interactiveType: 'determinism',
+        code: null,
+        didacticTip: '💡 <strong>Dica para a Aula:</strong> Comece perguntando para os alunos: <em>"Por que não existe um comando <code>fetch()</code> nativo dentro de Solidity?"</em>. Deixe eles pensarem por 30 segundos antes de introduzir a regra de ouro do determinismo.'
+      },
+
+      'problema-oraculo': {
+        tag: 'Nível 1 • O Conflito Fundamental',
+        title: '⚠️ O Problema do Oráculo (The Oracle Problem)',
+        lead: 'Se um smart contract fizesse uma chamada HTTP tradicional (ex: consultar o preço de mercado ou o resultado de um jogo de futebol), cada validador executaria a requisição em instantes diferentes e receberia dados diferentes. O consenso seria destruído.',
+        infoBoxes: [
+          {
+            title: 'O Paradoxo',
+            desc: 'A blockchain é extremamente segura, descentralizada e imutável. Mas ela é completamente cega e surda para qualquer coisa fora de sua própria memória de estado.',
+            type: 'highlight'
+          },
+          {
+            title: 'O Risco da Centralização',
+            desc: 'Se colocamos um único servidor web tradicional (API centralizada) para alimentar um contrato de bilhões de dólares, criamos um ponto único de falha e censura.',
+            type: 'warning'
+          }
+        ],
+        interactiveType: 'consensus-sim',
+        code: null,
+        didacticTip: '💡 <strong>Dica para a Aula:</strong> Explique que o "Oráculo" não é apenas quem busca a informação, é a ponte fiduciária. Se o oráculo mentir, o contrato executa a mentira com perfeição matemática.'
+      },
+
+      'push-vs-pull': {
+        tag: 'Nível 2 • Padrões Arquiteturais',
+        title: '🔄 Push vs. Pull: Como os dados chegam on-chain',
+        lead: 'Existem dois modelos principais para levar dados externos para dentro de contratos inteligentes, cada um com trade-offs entre custo de gás e frescor da informação.',
+        infoBoxes: [
+          {
+            title: 'Modelo Push (Feeds Contínuos)',
+            desc: 'Nós externos monitoram o mundo real e realizam transações periódicas gravando a cotação no contrato antes mesmo de você precisar dela (padrão clássico da Chainlink).'
+          },
+          {
+            title: 'Modelo Pull (On-Demand)',
+            desc: 'O dado é assinado criptograficamente off-chain e o próprio usuário final injeta essa assinatura na transação quando vai executar a ação (ex: Pyth Network, Chainlink Data Streams). Economiza muito gás na rede!'
+          }
+        ],
+        interactiveType: 'push-pull-sim',
+        code: null,
+        didacticTip: '💡 <strong>Dica para a Aula:</strong> Compare com uma ida ao mercado: Push é ter sempre leite na geladeira atualizado diariamente. Pull é você trazer a garrafa com o selo do produtor no bolso na hora em que for beber o café.'
+      },
+
+      'don-descentralizacao': {
+        tag: 'Nível 2 • Segurança & Consenso',
+        title: '🌐 DONs: Decentralized Oracle Networks',
+        lead: 'Para não depender de um servidor único, redes de oráculos descentralizados (como Chainlink) utilizam um comitê independente de nós validadores que coletam dados de múltiplas APIs e calculam o consenso off-chain antes de enviar para o contrato.',
+        infoBoxes: [
+          {
+            title: 'Agregação & Eliminação de Outliers',
+            desc: 'Se 1 dos nós estiver com falha ou for hackeado e reportar BTC a $1, o algoritmo descarta os extremos e calcula a mediana dos valores restantes.'
+          },
+          {
+            title: 'Múltiplas Fontes de Dados',
+            desc: 'Cada operador de nó consome pelo menos 3 a 5 agregadores de mercado premium (CoinMarketCap, CoinGecko, Binance, etc.), evitando manipulação de uma única corretora.'
+          }
+        ],
+        interactiveType: 'don-sim',
+        code: null,
+        didacticTip: '💡 <strong>Dica para a Aula:</strong> Mostre que o valor final gravado on-chain é o resultado de uma mediana ponderada. Isso anula ataques onde uma única API sofre instabilidade.'
+      },
+
+      'data-feeds-defi': {
+        tag: 'Nível 3 • Aplicação Prática',
+        title: '📈 Data Feeds em Protocolos DeFi',
+        lead: 'A espinha dorsal das finanças descentralizadas. Plataformas de empréstimo como Aave e MakerDAO dependem de cotações contínuas e confiáveis para determinar o valor das garantias e executar liquidações.',
+        infoBoxes: [
+          {
+            title: 'Deviation Threshold & Heartbeat',
+            desc: 'Oráculos não atualizam a cada bloco (seria caríssimo em gás). Eles atualizam se o preço variar X% (ex: 0.5%) ou se passar um tempo máximo (ex: 1 hora de Heartbeat).'
+          },
+          {
+            title: 'O Perigo do Flash Loan Attack',
+            desc: 'Protocolos amadores que consultavam o preço lendo o saldo de piscinas na Uniswap (AMMs) sofriam drenagem de liquidez com empréstimos relâmpago. Oráculos especializados evitam isso.'
+          }
+        ],
+        interactiveType: null,
+        code: null,
+        didacticTip: '💡 <strong>Dica para a Aula:</strong> Mencione que mais de $50 bilhões de dólares em valor bloqueado (TVL) em DeFi dependem de apenas alguns oráculos. Essa é a magnitude da responsabilidade.'
+      },
+
+      'vrf-randomness': {
+        tag: 'Nível 3 • Criptografia Aplicada',
+        title: '🎲 Aleatoriedade Verificável (Chainlink VRF)',
+        lead: 'Gerar números aleatórios justos na blockchain é um dos maiores desafios da computação distribuída. Fórmulas como keccak256(block.timestamp) podem ser manipuladas por validadores/mineradores.',
+        infoBoxes: [
+          {
+            title: 'Como o VRF Funciona?',
+            desc: 'O contrato solicita uma semente. O nó oráculo gera o número off-chain e gera uma PROVA CRIPTOGRÁFICA matemática. O contrato valida a prova on-chain antes de aceitar o número.'
+          },
+          {
+            title: 'Impossível Trapacear',
+            desc: 'Nem mesmo o operador do nó oráculo consegue forjar ou prever o resultado sem invalidar a prova matemática aceita pelo smart contract.'
+          }
+        ],
+        interactiveType: null,
+        code: null,
+        didacticTip: '💡 <strong>Dica para a Aula:</strong> Use o exemplo de uma rifa ou mint de NFT lendário: se o minerador puder prever o hash, ele só inclui na blockchain o bloco que dá o prêmio para ele.'
+      },
+
+      'automation-keepers': {
+        tag: 'Nível 3 • Execução Autônoma',
+        title: '⚙️ Automação de Smart Contracts (Keepers)',
+        lead: 'Ao contrário de servidores convencionais, smart contracts são entes PASSIVOS. Eles não possuem um "cron job" ou timer interno; precisam sempre que uma carteira externa assine e pague gás para executar código.',
+        infoBoxes: [
+          {
+            title: 'Como os Keepers Resolvem?',
+            desc: 'Uma rede descentralizada de bots monitora a blockchain. Quando uma condição pré-configurada é atingida (ex: passou 24h ou uma conta ficou insolvente), o Keeper dispara a transação.'
+          },
+          {
+            title: 'Casos Reais',
+            desc: 'Liquidação de empréstimos, rebalanceamento automático de carteiras DeFi e pagamento de dividendos periódicos.'
+          }
+        ],
+        interactiveType: null,
+        code: null,
+        didacticTip: '💡 <strong>Dica para a Aula:</strong> Explique que sem automação, o dono do protocolo teria que ficar acordado de madrugada no computador para disparar transações de manutenção manual.'
+      },
+
+      'remix-hands-on': {
+        tag: 'Nível 4 • Código para a Apresentação',
+        title: '💻 Hands-On: Consumindo Preço no Remix',
+        lead: 'Este é o exemplo prático e elegante que você pode demonstrar ao vivo em 5 minutos no Remix IDE para os estudantes do Inteli.',
+        infoBoxes: [
+          {
+            title: 'Como Rodar na Aula?',
+            desc: '1. Abra o remix.ethereum.org<br>2. Crie um arquivo PriceConsumer.sol<br>3. Conecte a carteira na testnet Sepolia<br>4. Faça o deploy e chame getChainlinkDataFeedLatestAnswer()!'
+          },
+          {
+            title: 'Interface Oficial',
+            desc: 'Utiliza a interface oficial da Chainlink `AggregatorV3Interface` apontando para o contrato na rede Sepolia.'
+          }
+        ],
+        interactiveType: null,
+        code: `// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+// 1. Interface oficial da Chainlink
+interface AggregatorV3Interface {
+    function decimals() external view returns (uint8);
+    function description() external view returns (string memory);
+    function version() external view returns (uint256);
+    function latestRoundData() external view returns (
+        uint80 roundId,
+        int256 answer,
+        uint256 startedAt,
+        uint256 updatedAt,
+        uint80 answeredInRound
+    );
+}
+
+contract PriceConsumerV3 {
+    AggregatorV3Interface internal dataFeed;
+
+    /**
+     * Rede: Sepolia Testnet
+     * Par: ETH / USD
+     * Endereço do Contrato do Feed: 0x694AA1769357215DE4FAC081bf1f309aDC325306
+     */
+    constructor() {
+        dataFeed = AggregatorV3Interface(
+            0x694AA1769357215DE4FAC081bf1f309aDC325306
+        );
+    }
+
+    /**
+     * Retorna a cotação mais recente de ETH em USD
+     */
+    function getLatestPrice() public view returns (int256, uint8) {
+        (
+            /* uint80 roundID */,
+            int256 price,
+            /* uint startedAt */,
+            /* uint timeStamp */,
+            /* uint80 answeredInRound */
+        ) = dataFeed.latestRoundData();
+
+        uint8 decimals = dataFeed.decimals();
+        // O valor retornado normalmente tem 8 casas decimais (ex: 250000000000 = $2,500.00)
+        return (price, decimals);
+    }
+}`,
+        didacticTip: '💡 <strong>Roteiro da Demonstração:</strong> Mostre que ler um feed de dados é uma função `view` (grátis de consultar!). O contrato que atualiza o feed é quem paga o gás para escrever as novas cotações.'
+      }
+    };
+
+    // Renderizador de Conteúdo
+    function renderNode(nodeId) {
+      const data = CONTENT_DATA[nodeId];
+      if (!data) return;
+
+      const container = document.getElementById('content-container');
+
+      let html = `
+        <div class="content-card">
+          <span class="tag">${data.tag}</span>
+          <h2 style="margin-top: 0.75rem;">${data.title}</h2>
+          <p class="lead-text">${data.lead}</p>
+
+          <div class="info-grid">
+            ${data.infoBoxes.map(b => `
+              <div class="info-box ${b.type || ''}">
+                <h3>${b.title}</h3>
+                <p>${b.desc}</p>
+              </div>
+            `).join('')}
+          </div>
+
+          ${renderInteractive(data.interactiveType)}
+          ${renderCode(data.code)}
+
+          <div class="didactic-box">
+            <h4>🎯 Preparando a sua Aula</h4>
+            <p>${data.didacticTip}</p>
+          </div>
+        </div>
+      `;
+
+      container.innerHTML = html;
+      attachSimulatorEvents(data.interactiveType);
+    }
+
+    function renderInteractive(type) {
+      if (!type) return '';
+
+      if (type === 'consensus-sim') {
+        return `
+          <div class="sim-container">
+            <div class="sim-header">
+              <h4>⚡ Simulação: Por que Requisição HTTP quebra o Consenso?</h4>
+              <button class="sim-btn" id="btn-run-http">
+                <span>Disparar API Externa</span> 🌐
+              </button>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+              Imagine que 3 validadores tentam executar: <code>fetch("https://api.binance.com/price/ETH")</code> no mesmo bloco com latências normais de rede.
+            </p>
+
+            <div class="nodes-grid">
+              <div class="validator-node" id="val-1">
+                <div class="node-header-text">Validador 1 (EUA)</div>
+                <div class="node-val" id="val-1-txt">$2,450.10</div>
+                <div style="font-size:0.75rem; color:var(--text-dim); margin-top:4px;">Resposta em 12ms</div>
+              </div>
+              <div class="validator-node" id="val-2">
+                <div class="node-header-text">Validador 2 (Alemanha)</div>
+                <div class="node-val" id="val-2-txt">$2,450.10</div>
+                <div style="font-size:0.75rem; color:var(--text-dim); margin-top:4px;">Resposta em 85ms</div>
+              </div>
+              <div class="validator-node" id="val-3">
+                <div class="node-header-text">Validador 3 (Brasil)</div>
+                <div class="node-val" id="val-3-txt">$2,450.10</div>
+                <div style="font-size:0.75rem; color:var(--text-dim); margin-top:4px;">Resposta em 140ms</div>
+              </div>
+            </div>
+
+            <div class="sim-status-box" id="sim-status">
+              <span id="status-icon">🟢</span>
+              <span id="status-msg">Estado sincronizado. Clique no botão acima para simular a chamada HTTP externa.</span>
+            </div>
+          </div>
+        `;
+      }
+
+      if (type === 'don-sim') {
+        return `
+          <div class="sim-container">
+            <div class="sim-header">
+              <h4>🛡️ Simulador: Agregação da Rede Descentralizada (DON)</h4>
+              <button class="sim-btn" id="btn-run-don">
+                <span>Injetar Nó Malicioso / Outlier</span> 👾
+              </button>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+              Veja como múltiplos nós calculam a cotação e anulam tentativas de ataque ou dados corrompidos através do cálculo de mediana.
+            </p>
+
+            <div class="nodes-grid" style="grid-template-columns: repeat(4, 1fr);">
+              <div class="validator-node" id="don-1">
+                <div class="node-header-text">Nó A (Chainlink)</div>
+                <div class="node-val" id="don-val-1">$2,500</div>
+              </div>
+              <div class="validator-node" id="don-2">
+                <div class="node-header-text">Nó B (Chainlink)</div>
+                <div class="node-val" id="don-val-2">$2,502</div>
+              </div>
+              <div class="validator-node" id="don-3">
+                <div class="node-header-text">Nó C (Chainlink)</div>
+                <div class="node-val" id="don-val-3">$2,499</div>
+              </div>
+              <div class="validator-node" id="don-4">
+                <div class="node-header-text">Nó D (Sob Ataque)</div>
+                <div class="node-val" id="don-val-4" style="color:#60a5fa;">$2,501</div>
+              </div>
+            </div>
+
+            <div class="sim-status-box">
+              <span>📊 <strong>Valor de Consenso Agregado (Mediana Gravada on-chain):</strong></span>
+              <span id="consensus-val" style="font-family:'JetBrains Mono'; font-weight:700; color:#34d399; font-size:1.1rem; margin-left:8px;">$2,500.50</span>
+            </div>
+          </div>
+        `;
+      }
+
+      return '';
+    }
+
+    function renderCode(code) {
+      if (!code) return '';
+      return `
+        <div class="code-block">
+          <div class="code-header">
+            <span>PriceConsumer.sol (Compatível com Remix & Sepolia)</span>
+            <button class="copy-btn" onclick="navigator.clipboard.writeText(document.getElementById('sol-code').innerText); this.innerText='Copiado!'; setTimeout(()=>this.innerText='Copiar Código', 2000)">Copiar Código</button>
+          </div>
+          <pre><code id="sol-code">${escapeHtml(code)}</code></pre>
+        </div>
+      `;
+    }
+
+    function escapeHtml(string) {
+      return string.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function attachSimulatorEvents(type) {
+      if (type === 'consensus-sim') {
+        const btn = document.getElementById('btn-run-http');
+        if (!btn) return;
+
+        btn.onclick = () => {
+          const v1 = document.getElementById('val-1');
+          const v2 = document.getElementById('val-2');
+          const v3 = document.getElementById('val-3');
+          const t1 = document.getElementById('val-1-txt');
+          const t2 = document.getElementById('val-2-txt');
+          const t3 = document.getElementById('val-3-txt');
+          const status = document.getElementById('sim-status');
+          const icon = document.getElementById('status-icon');
+          const msg = document.getElementById('status-msg');
+
+          // Simula variância de frações de segundo na API externa
+          const p1 = (2450.00 + Math.random() * 0.4).toFixed(2);
+          const p2 = (2450.50 + Math.random() * 0.4).toFixed(2);
+          const p3 = (2449.80 + Math.random() * 0.4).toFixed(2);
+
+          t1.innerText = `$${p1}`;
+          t2.innerText = `$${p2}`;
+          t3.innerText = `$${p3}`;
+
+          v1.className = 'validator-node diverged';
+          v2.className = 'validator-node diverged';
+          v3.className = 'validator-node diverged';
+
+          status.style.border = '1px solid #ef4444';
+          status.style.background = 'rgba(239, 68, 68, 0.15)';
+          icon.innerText = '🚨';
+          msg.innerHTML = '<strong style="color:#ef4444;">FALHA DE CONSENSO DETECTADA:</strong> Cada nó recebeu um preço ligeiramente diferente devido à variação de milissegundos na API externa. A blockchain entraria em fork imediatamente!';
+        };
+      }
+
+      if (type === 'don-sim') {
+        const btn = document.getElementById('btn-run-don');
+        if (!btn) return;
+
+        let corrupted = false;
+        btn.onclick = () => {
+          corrupted = !corrupted;
+          const node4 = document.getElementById('don-4');
+          const val4 = document.getElementById('don-val-4');
+          const consensus = document.getElementById('consensus-val');
+
+          if (corrupted) {
+            node4.className = 'validator-node diverged';
+            val4.innerText = '$1.00';
+            val4.style.color = '#ef4444';
+            btn.innerHTML = '<span>Restaurar Nó D</span> 🔄';
+            // Mediana de [1.00, 2499, 2500, 2502] = (2499 + 2500) / 2 = 2499.50
+            consensus.innerText = '$2,499.50 (Outlier de $1.00 descartado com sucesso!)';
+          } else {
+            node4.className = 'validator-node';
+            val4.innerText = '$2,501';
+            val4.style.color = '#60a5fa';
+            btn.innerHTML = '<span>Injetar Nó Malicioso / Outlier</span> 👾';
+            consensus.innerText = '$2,500.50';
+          }
+        };
+      }
+    }
+
+    // Inicialização da Navegação
+    document.querySelectorAll('.node-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.node-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const nodeId = btn.getAttribute('data-node');
+        renderNode(nodeId);
+      });
+    });
+
+    // Render Inicial
+    renderNode('evm-determinismo');
+  </script>
+</body>
+</html>

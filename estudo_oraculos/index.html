@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Plataforma interativa de aprendizado sobre Oráculos em Blockchain e Integração com Dados Externos. Árvore de conceitos, simulações visuais e laboratório Solidity.">
+  <title>Oráculos Web3 — Plataforma Educacional Interativa</title>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/tree.css">
+</head>
+<body>
+
+  <!-- =========================================================================
+       Header & Global Navigation Bar
+       ========================================================================= -->
+  <header class="app-header" role="banner">
+    <div class="app-container header-inner">
+      <div class="header-brand">
+        <div class="brand-icon" aria-hidden="true">Ω</div>
+        <div class="brand-text">
+          <span class="brand-title">Oráculos em Blockchain</span>
+          <span class="brand-subtitle">Atividade 10 • Inteli Blockchain (05/10/2026)</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Modo Instrutor / Aluno Toggle -->
+        <label class="teacher-toggle-wrap" id="teacher-toggle-wrap" title="Alternar entre Modo Aluno (bloqueio por pré-requisitos) e Modo Instrutor (acesso livre imediato)">
+          <span class="teacher-label">
+            <span aria-hidden="true">🎓</span>
+            <span id="teacher-mode-text">Modo Instrutor</span>
+          </span>
+          <span class="toggle-switch">
+            <input type="checkbox" id="teacher-mode-toggle" aria-label="Ativar Modo Instrutor">
+            <span class="toggle-slider"></span>
+          </span>
+        </label>
+      </div>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       Main Application Shell
+       ========================================================================= -->
+  <main class="app-container" role="main">
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs-bar" role="navigation" aria-label="Navegação de seções">
+      <a href="#tree-section" class="nav-tab-item active" data-tab="tree">
+        <span aria-hidden="true">🌳</span> Árvore de Dependências
+      </a>
+      <a href="#simulations-section" class="nav-tab-item" data-tab="simulations">
+        <span aria-hidden="true">⚡</span> Simulações Interativas
+      </a>
+      <a href="#theory-section" class="nav-tab-item" data-tab="theory">
+        <span aria-hidden="true">📚</span> Teoria & Casos Reais
+      </a>
+      <a href="#codelab-section" class="nav-tab-item" data-tab="codelab">
+        <span aria-hidden="true">💻</span> Laboratório Solidity (Remix)
+      </a>
+    </nav>
+
+    <!-- Controls Dock: Search, Filters & Progress Tracking -->
+    <section class="controls-dock" aria-label="Controles e Filtros de Estudo">
+      <div class="controls-upper">
+        <!-- Search with Debounce -->
+        <div class="search-box">
+          <span class="search-icon" aria-hidden="true">🔍</span>
+          <input
+            type="search"
+            id="search-input"
+            class="search-input"
+            placeholder="Buscar tópicos, tags ou conceitos..."
+            aria-label="Buscar conceitos na árvore"
+          >
+        </div>
+
+        <!-- Filter by Level -->
+        <div class="filter-group">
+          <label for="filter-level" class="filter-label">Nível:</label>
+          <select id="filter-level" class="filter-select" aria-label="Filtrar por nível">
+            <option value="all">Todos os Níveis (0 a 4)</option>
+            <option value="0">Nível 0: EVM & Determinismo</option>
+            <option value="1">Nível 1: O Problema do Oráculo</option>
+            <option value="2">Nível 2: Arquiteturas Push/Pull & DONs</option>
+            <option value="3">Nível 3: Primitivas Especializadas</option>
+            <option value="4">Nível 4: Hands-on Solidity</option>
+          </select>
+        </div>
+
+        <!-- Filter by Difficulty -->
+        <div class="filter-group">
+          <span class="filter-label">Dificuldade:</span>
+          <div class="difficulty-pills" role="radiogroup" aria-label="Filtrar por dificuldade">
+            <button type="button" class="pill-btn active" data-difficulty="all" role="radio" aria-checked="true">Todos</button>
+            <button type="button" class="pill-btn" data-difficulty="Fundamento" role="radio" aria-checked="false">Fundamento</button>
+            <button type="button" class="pill-btn" data-difficulty="Intermediário" role="radio" aria-checked="false">Intermediário</button>
+            <button type="button" class="pill-btn" data-difficulty="Avançado" role="radio" aria-checked="false">Avançado</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Progress Tracking Bar -->
+      <div class="controls-lower">
+        <div class="progress-info">
+          <div class="progress-text">
+            <span class="progress-label">Progresso do Estudo</span>
+            <span class="progress-stat" id="progress-stat">0 / 9 Concluídos (0%)</span>
+          </div>
+          <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress-track">
+            <div class="progress-bar-fill" id="progress-bar-fill"></div>
+          </div>
+        </div>
+
+        <button type="button" class="btn-reset" id="btn-reset-progress" title="Zerar progresso e reiniciar trilha">
+          <span aria-hidden="true">↺</span> Reiniciar Trilha
+        </button>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         Section 1: Árvore de Dependências Conceitual (F02, F03, F05, F06)
+         ======================================================================= -->
+    <section id="tree-section" class="app-section" aria-labelledby="tree-heading">
+      <header class="section-header">
+        <span class="section-tag">Trilha Pedagógica</span>
+        <h2 id="tree-heading" class="section-title">Árvore de Dependências de Conceitos</h2>
+        <p class="section-subtitle">
+          Navegue pela progressão técnica desde o determinismo da EVM até o consumo seguro de oráculos em Solidity. Clique em qualquer nó desbloqueado para inspecionar os detalhes matemáticos, impactos de arquitetura e código.
+        </p>
+      </header>
+
+      <!-- DAG Visualizer Container (Engine renders here) -->
+      <div id="tree-container" class="tree-container-wrapper">
+        <!-- Rendered by treeEngine.js -->
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         Section 2: Simulações Dinâmicas (F07, F08, F09, F10 — Placeholders M1)
+         ======================================================================= -->
+    <section id="simulations-section" class="app-section" aria-labelledby="sim-heading">
+      <header class="section-header">
+        <span class="section-tag">Ambiente Visual</span>
+        <h2 id="sim-heading" class="section-title">Painel de Simulações Interativas</h2>
+        <p class="section-subtitle">
+          Demonstrações dinâmicas para visualizar o porquê da quebra de consenso com requisições HTTP, a economia de gás em arquiteturas Push vs. Pull e a resiliência estatística de Redes Descentralizadas (DONs).
+        </p>
+      </header>
+
+      <div class="grid-2">
+        <article class="placeholder-card" id="sim-consensus">
+          <span class="placeholder-badge">Simulação 1</span>
+          <h3 class="placeholder-title">🚨 Quebra de Consenso por Chamadas HTTP</h3>
+          <p class="placeholder-desc">
+            Visualizador multi-validador demonstrando por que chamadas de rede Web2 quebram o consenso da EVM ao gerarem State Roots divergentes em diferentes regiões globais.
+          </p>
+          <div class="placeholder-meta">
+            <span>F07 • Milestones subsequentes</span>
+            <span>Atividade 10 • 19:15</span>
+          </div>
+        </article>
+
+        <article class="placeholder-card" id="sim-push-pull">
+          <span class="placeholder-badge">Simulação 2</span>
+          <h3 class="placeholder-title">⚡ Arquitetura Push vs. Pull</h3>
+          <p class="placeholder-desc">
+            Fluxo animado de pacotes comparando feeds periódicos contínuos (Chainlink clássico) versus alimentação sob demanda assinada pelo usuário (Pyth / Data Streams).
+          </p>
+          <div class="placeholder-meta">
+            <span>F08 • Milestones subsequentes</span>
+            <span>Atividade 10 • 19:40</span>
+          </div>
+        </article>
+
+        <article class="placeholder-card" id="sim-don">
+          <span class="placeholder-badge">Simulação 3</span>
+          <h3 class="placeholder-title">🛡️ Agregação de Dados da DON & Outliers</h3>
+          <p class="placeholder-desc">
+            Rede com múltiplos nós oráculos independentes, tolerância a falhas bizantinas, filtragem estatística por IQR e cálculo de mediana robusta contra ataques.
+          </p>
+          <div class="placeholder-meta">
+            <span>F09 • Milestones subsequentes</span>
+            <span>Atividade 10 • 19:55</span>
+          </div>
+        </article>
+
+        <article class="placeholder-card" id="sim-sandbox">
+          <span class="placeholder-badge">Sandbox DeFi</span>
+          <h3 class="placeholder-title">📊 Flash Loans & Curva AMM (x · y = k)</h3>
+          <p class="placeholder-desc">
+            Simulador de manipulação momentânea de pools de liquidez e anatomia dos maiores exploits históricos de oráculos da história de DeFi.
+          </p>
+          <div class="placeholder-meta">
+            <span>F10 • Milestones subsequentes</span>
+            <span>Atividade 10 • 20:10</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         Section 3: Teoria & Casos de Estudo (F11, F12, F13, F14, F15)
+         ======================================================================= -->
+    <section id="theory-section" class="app-section" aria-labelledby="theory-heading">
+      <header class="section-header">
+        <span class="section-tag">Fundamentação Técnica</span>
+        <h2 id="theory-heading" class="section-title">Módulos Teóricos & Estudos de Casos Reais</h2>
+        <p class="section-subtitle">
+          Dissecação matemática e forense de exploits históricos (bZx, Harvest Finance, Mango Markets, Euler), o funcionamento criptográfico do VRF e a mecânica em 2 fases dos Keepers.
+        </p>
+      </header>
+
+      <div class="grid-3">
+        <article class="placeholder-card">
+          <span class="placeholder-badge">Caso 1</span>
+          <h3 class="placeholder-title">Ataques de Flash Loan & AMM Manipulation</h3>
+          <p class="placeholder-desc">
+            Como invasores manipularam reservas instantâneas em pools descentralizados para drenar protocolos que utilizavam preços spot como oráculos.
+          </p>
+        </article>
+
+        <article class="placeholder-card">
+          <span class="placeholder-badge">Caso 2</span>
+          <h3 class="placeholder-title">VRF: Por que block.timestamp é Fatal</h3>
+          <p class="placeholder-desc">
+            A vulnerabilidade de variáveis de bloco a manipulações de MEV por mineradores/validadores e a prova de curva elíptica do Chainlink VRF.
+          </p>
+        </article>
+
+        <article class="placeholder-card">
+          <span class="placeholder-badge">Caso 3</span>
+          <h3 class="placeholder-title">Keepers: Superando a Passividade da EVM</h3>
+          <p class="placeholder-desc">
+            A separação entre simulação off-chain gratuita (checkUpkeep) e execução on-chain garantida (performUpkeep) para automação DeFi autônoma.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         Section 4: Laboratório Hands-on Solidity (F16, F17, F18, F19, F20, F21)
+         ======================================================================= -->
+    <section id="codelab-section" class="app-section" aria-labelledby="codelab-heading">
+      <header class="section-header">
+        <span class="section-tag">Laboratório Prático</span>
+        <h2 id="codelab-heading" class="section-title">Hands-on em Solidity & Remix IDE</h2>
+        <p class="section-subtitle">
+          Contratos completos prontos para compilação e teste no Remix IDE: PriceConsumerV3 com 4 proteções de produção, MockAggregator para Remix VM, VRFv25 e AutomatedVaultKeeper.
+        </p>
+      </header>
+
+      <div class="glass-panel" style="padding: 2rem; text-align: center;">
+        <p style="font-size: 1.05rem; margin-bottom: 1rem;">
+          O visualizador interativo de contratos Solidity, cópia para clipboard e guia passo a passo do Remix IDE serão expandidos no Milestone 4.
+        </p>
+        <p style="font-size: 0.88rem; color: var(--cyan-primary);">
+          Contratos disponíveis: <code>PriceConsumerV3.sol</code>, <code>VRFv25Lottery.sol</code>, <code>AutomatedVaultKeeper.sol</code> e <code>MockAggregatorV3.sol</code>.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =========================================================================
+       Modals, Drawers & Notifications Containers
+       ========================================================================= -->
+  <!-- Concept Detail Inspector Drawer (Modern Native Dialog with Light Dismiss) -->
+  <dialog id="concept-drawer" class="concept-drawer" closedby="any" aria-labelledby="drawer-title" aria-modal="true">
+    <!-- Populated dynamically by src/ui/drawer.js -->
+  </dialog>
+
+  <!-- Toast Notification Stack -->
+  <div id="toast-container" class="toast-container" aria-live="polite" role="region" aria-label="Notificações da aplicação"></div>
+
+  <!-- Footer -->
+  <footer style="padding: 3rem 0; border-top: 1px solid var(--border-subtle); margin-top: 4rem; text-align: center; color: var(--text-dim); font-size: 0.85rem;">
+    <div class="app-container">
+      <p>Desenvolvido para a Atividade 10 do Inteli Blockchain (05/10/2026) • Instrutor Kauan</p>
+      <p style="margin-top: 0.35rem;">Arquitetura Standalone SPA Zero-Backend • Conformidade WCAG AA</p>
+    </div>
+  </footer>
+
+  <!-- Main JavaScript Bootstrapper (ES2022+ Module) -->
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
