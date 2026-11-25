@@ -1,0 +1,192 @@
+/* ========================================================
+   HEADER 3D INTELI BLOCKCHAIN KNOT LOGO
+   ======================================================== */
+.ibc-knot-badge {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  cursor: grab;
+  touch-action: none;
+  border-radius: 12px;
+  background: radial-gradient(circle at 50% 50%, rgba(27, 152, 224, 0.16), rgba(91, 31, 150, 0.08) 65%, transparent);
+}
+
+.ibc-knot-badge:active {
+  cursor: grabbing;
+}
+
+.ibc-knot-canvas {
+  position: absolute;
+  inset: -4px;
+  width: calc(100% + 8px);
+  height: calc(100% + 8px);
+  opacity: 0;
+  transition: opacity 0.45s ease;
+  pointer-events: none;
+}
+
+.ibc-knot-fallback {
+  position: absolute;
+  inset: 4px;
+  width: calc(100% - 8px);
+  height: calc(100% - 8px);
+  transition: opacity 0.45s ease;
+}
+
+.ibc-knot-badge.knot--gl .ibc-knot-canvas {
+  opacity: 1;
+}
+
+.ibc-knot-badge.knot--gl .ibc-knot-fallback {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ========================================================
+   SLIDE 2: ROADMAP SERPENTINE FLOWCHART
+   ======================================================== */
+.roadmap-node {
+  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+}
+
+.roadmap-node:hover {
+  transform: translateY(-2px);
+}
+
+/* ========================================================
+   SLIDE 6: UNIFIED MORPHING PIPELINE WORKSPACE
+   ======================================================== */
+.pipe-workspace {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  flex: 1;
+  min-height: 0;
+}
+
+/* OVERVIEW MODE: Horizontal 3-column strip centered + compact detail bar below */
+.pipe-workspace[data-mode="overview"] .pipe-nodes-rail {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.65rem;
+  align-items: center;
+  margin-block: auto;
+}
+
+.pipe-workspace[data-mode="overview"] .pipe-detail-stage {
+  height: auto;
+  flex: 0 0 auto;
+}
+
+@media (min-width: 768px) {
+  .pipe-workspace[data-mode="overview"] .pipe-nodes-rail {
+    grid-template-columns: minmax(0, 1fr) 68px minmax(0, 1fr) 68px minmax(0, 1fr);
+    gap: 0.75rem;
+  }
+}
+
+.pipe-workspace[data-mode="overview"] .pipe-conn-v {
+  display: none;
+}
+
+.pipe-workspace[data-mode="overview"] .pipe-conn-h {
+  display: flex;
+}
+
+/* DEEPDIVE MODE: Vertical stack on left (L1 top -> L2 middle -> L3 bottom), explanation on right */
+.pipe-workspace[data-mode="deepdive"] {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+@media (min-width: 1024px) {
+  .pipe-workspace[data-mode="deepdive"] {
+    grid-template-columns: 280px minmax(0, 1fr);
+    gap: 1.25rem;
+  }
+}
+
+.pipe-workspace[data-mode="deepdive"] .pipe-nodes-rail {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.25rem;
+  height: 100%;
+}
+
+.pipe-workspace[data-mode="deepdive"] .pipe-conn-h {
+  display: none;
+}
+
+.pipe-workspace[data-mode="deepdive"] .pipe-conn-v {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-block: 1px;
+}
+
+/* Compact adjustments for rail cards when stacked vertically on the left */
+.pipe-workspace[data-mode="deepdive"] .pipe-level-card {
+  padding: 0.68rem 0.9rem;
+}
+
+.pipe-workspace[data-mode="deepdive"] .pipe-level-card .pipe-card-chips {
+  display: none;
+}
+
+.pipe-workspace[data-mode="deepdive"] .pipe-level-card.is-active {
+  opacity: 1;
+  transform: translateX(4px);
+}
+
+.pipe-workspace[data-mode="deepdive"] .pipe-level-card.is-inactive {
+  opacity: 0.56;
+}
+
+.pipe-workspace[data-mode="deepdive"] .pipe-level-card.is-inactive:hover {
+  opacity: 0.92;
+}
+
+.pipe-level-card {
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.6s ease,
+    box-shadow 0.6s ease,
+    background-color 0.6s ease;
+}
+
+/* Detail stage */
+.pipe-detail-stage {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+}
+
+/* Top bar tabs in Level 2 (4 bars) & Level 3 (3 bars) */
+.pipe-bar-btn {
+  transition:
+    background-color 0.5s ease,
+    border-color 0.5s ease,
+    opacity 0.5s ease,
+    transform 0.5s ease,
+    box-shadow 0.5s ease;
+}
+
+.pipe-bar-btn.is-active {
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+.pipe-bar-btn.is-inactive {
+  opacity: 0.68;
+}
+
+.pipe-bar-btn.is-inactive:hover {
+  opacity: 0.96;
+}

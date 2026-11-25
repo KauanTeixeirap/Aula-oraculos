@@ -3,105 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Oráculos na Blockchain & Arquitetura Chainlink — Apresentação Interativa</title>
+  <title>Oráculos na Blockchain &amp; Arquitetura Chainlink — Apresentação Interativa</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <style>
-    :root {
-      --bg-dark: #090d16;
-      --card-dark: #111827;
-      --accent-blue: #375bd2;
-      --accent-cyan: #38bdf8;
-    }
-
-    * {
-      box-sizing: border-box;
-      user-select: none;
-    }
-
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Inter', sans-serif;
-      background-color: #070b14;
-      color: #f8fafc;
-      overflow: hidden;
-      height: 100vh;
-      width: 100vw;
-    }
-
-    h1, h2, h3, .font-display {
-      font-family: 'Space Grotesk', sans-serif;
-    }
-
-    .font-mono-code {
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    /* Slide Transition Animations */
-    .slide-view {
-      display: none;
-      opacity: 0;
-      transform: translateY(12px) scale(0.99);
-      transition: opacity 0.38s cubic-bezier(0.16, 1, 0.3, 1), transform 0.38s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .slide-view.active {
-      display: flex;
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-
-    /* Data packet animations along pipelines */
-    @keyframes flowRight {
-      0% { left: 2%; opacity: 0; transform: scale(0.7); }
-      15% { opacity: 1; transform: scale(1); }
-      85% { opacity: 1; transform: scale(1); }
-      100% { left: 95%; opacity: 0; transform: scale(0.7); }
-    }
-
-    .packet-dot {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      animation: flowRight 2.8s infinite linear;
-    }
-
-    .packet-dot.delay-1 { animation-delay: 0.9s; }
-    .packet-dot.delay-2 { animation-delay: 1.8s; }
-
-    @keyframes pulseGlow {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.35); }
-      50% { box-shadow: 0 0 25px 6px rgba(56, 189, 248, 0.2); }
-    }
-
-    .glow-active {
-      animation: pulseGlow 2.4s infinite ease-in-out;
-    }
-
-    @keyframes washPingPong {
-      0%, 100% { transform: translateX(0); }
-      50% { transform: translateX(130px); }
-    }
-
-    .wash-packet {
-      animation: washPingPong 1.1s infinite ease-in-out;
-    }
-
-    /* Custom Scrollbar for inner panels if needed on small screens */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: rgba(15, 23, 42, 0.6);
-    }
-    ::-webkit-scrollbar-thumb {
-      background: rgba(100, 116, 139, 0.5);
-      border-radius: 9999px;
-    }
-  </style>
+  <link rel="stylesheet" href="slides/styles/base.css">
+  <link rel="stylesheet" href="slides/styles/animations.css">
+  <link rel="stylesheet" href="slides/styles/components.css">
 </head>
 <body class="flex flex-col justify-between relative bg-[#070b14] text-slate-100">
 
@@ -115,27 +23,51 @@
   <!-- TOP NAVIGATION BAR -->
   <header class="relative z-20 flex items-center justify-between px-6 py-3 border-b border-slate-800/80 bg-slate-950/70 backdrop-blur-md">
     <div class="flex items-center gap-3">
-      <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-600/30">
-        <i class="fa-solid fa-cubes text-white text-sm"></i>
+      <!-- 3D Floating Inteli Blockchain Logo (Extracted from inteliblockchain.org) -->
+      <div id="ibc-knot-container" class="ibc-knot-badge" title="Inteli Blockchain • Logo 3D (arraste para girar)">
+        <canvas id="ibc-knot-canvas" class="ibc-knot-canvas" aria-hidden="true"></canvas>
+        <svg class="ibc-knot-fallback" viewBox="0 0 380 380" aria-hidden="true">
+          <defs>
+            <linearGradient id="ibcKnotGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#1739a8" />
+              <stop offset="100%" stop-color="#5b1f96" />
+            </linearGradient>
+          </defs>
+          <path
+            fill="url(#ibcKnotGrad)"
+            fill-rule="evenodd"
+            d="M258.01 70.464L206.994 121.479L308.985 223.47L342.942 189.512L308.991 155.56L282.071 182.48L265.054 165.463L309.025 121.492L377.131 189.598L309.098 257.632L257.99 206.524L156.028 308.486L189.999 342.457L223.941 308.515L197.005 281.579L214.026 264.558L258.1 308.632L190.002 376.73L121.896 308.624L172.982 257.538L70.994 155.55L37.045 189.499L70.994 223.448L97.935 196.507L114.949 213.52L70.869 257.601L2.836 189.568L70.94 121.464L121.981 172.504L223.954 70.531L189.983 36.561L156.05 70.494L182.986 97.43L165.939 114.477L121.931 70.47L189.973 2.427ZM139.016 189.487L189.999 240.47L240.949 189.52L189.966 138.537Z"
+          />
+        </svg>
       </div>
       <div>
-        <span class="font-mono-code text-xs uppercase tracking-wider text-cyan-400 block">Aula Blockchain • Prof. Guide</span>
-        <h1 class="text-sm font-bold text-slate-100 leading-tight">Oráculos Descentralizados & Chainlink</h1>
+        <span class="font-mono-code text-xs uppercase tracking-wider text-cyan-400 block">Aula Blockchain • Inteli Blockchain</span>
+        <h1 class="text-sm font-bold text-slate-100 leading-tight">Oráculos Descentralizados &amp; Chainlink</h1>
       </div>
     </div>
 
     <!-- Slide Progress Pills -->
-    <div id="slide-Dots" class="hidden md:flex items-center gap-1.5">
-      <!-- Populated dynamically via JS -->
-    </div>
+    <div id="slide-Dots" class="hidden md:flex items-center gap-1.5"></div>
 
     <!-- Action Controls -->
     <div class="flex items-center gap-2">
-      <button onclick="toggleTeacherNotes()" id="btn-notes" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800/90 hover:bg-slate-700 text-amber-300 border border-amber-500/30 flex items-center gap-1.5 transition" title="Atalho: Tecla N">
+      <button
+        type="button"
+        onclick="OracleDeck.toggleTeacherNotes()"
+        id="btn-notes"
+        class="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-900/80 hover:bg-blue-950/75 text-blue-300/90 hover:text-blue-200 border border-blue-500/30 flex items-center gap-1.5 transition"
+        title="Atalho: Tecla N"
+      >
         <i class="fa-solid fa-chalkboard-user"></i>
         <span>Cola do Professor</span>
       </button>
-      <button onclick="toggleFullScreen()" class="p-2 rounded-lg text-xs bg-slate-800/90 hover:bg-slate-700 text-slate-300 border border-slate-700 transition" title="Tela Cheia (Tecla F)">
+      <button
+        type="button"
+        onclick="OracleDeck.toggleFullScreen()"
+        class="p-2 rounded-lg text-xs bg-slate-800/90 hover:bg-slate-700 text-slate-300 border border-slate-700 transition"
+        title="Tela Cheia (Tecla F)"
+        aria-label="Alternar Tela Cheia"
+      >
         <i class="fa-solid fa-expand"></i>
       </button>
     </div>
@@ -143,1353 +75,95 @@
 
   <!-- MAIN SLIDE STAGE -->
   <main class="relative z-10 flex-1 flex items-center justify-center px-6 py-4 overflow-y-auto">
-    <div class="w-full max-w-6xl h-full max-h-[640px] flex flex-col justify-center">
-
-      <!-- ==========================================
-           SLIDE 1: CAPA E PROVOCAÇÃO INICIAL
-           ========================================== -->
-      <section class="slide-view active flex-col justify-center h-full px-6" data-slide="0" data-steps="1">
-        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-cyan-300 font-mono-code text-xs w-fit mb-6">
-          <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
-          ARQUITETURA BLOCKCHAIN • ESTUDO DE CASO ETH/USD
-        </div>
-        <h2 class="text-5xl md:text-6xl font-bold tracking-tight text-white max-w-4xl leading-[1.1] mb-6">
-          Oráculos na <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Blockchain</span>
-        </h2>
-        <p class="text-lg md:text-xl text-slate-300 max-w-3xl leading-relaxed">
-          Como contratos inteligentes isolados conseguem descobrir o preço real do Ethereum e do Dólar usando mais de 20 fontes globais sem depender de um servidor central.
-        </p>
-      </section>
-
-      <!-- ==========================================
-           SLIDE 2: O QUE É UM ORÁCULO (PONTE OFF-CHAIN -> ON-CHAIN)
-           ========================================== -->
-      <section class="slide-view flex-col justify-between h-full" data-slide="1" data-steps="1">
-        <div>
-          <span class="font-mono-code text-xs text-cyan-400 uppercase tracking-widest">01 • Definição Fundamental</span>
-          <h2 class="text-3xl md:text-4xl font-bold text-white mt-1">O que é um Oráculo e qual a sua função?</h2>
-          <p class="text-slate-400 text-sm md:text-base mt-1">
-            É o middleware (ponte segura) que captura dados de fora da blockchain (<strong class="text-white">Off-Chain</strong>) e os injeta dentro da rede (<strong class="text-cyan-300">On-Chain</strong>).
-          </p>
-        </div>
-
-        <!-- Animated Bridge Diagram -->
-        <div class="grid grid-cols-1 md:grid-cols-11 gap-4 items-center my-auto">
-          <!-- Off-Chain Side -->
-          <div class="md:col-span-4 bg-slate-900/90 border border-slate-800 rounded-2xl p-6 h-full flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between mb-4">
-                <span class="px-2.5 py-1 rounded-md bg-slate-800 text-slate-300 font-mono-code text-xs">MUNDO OFF-CHAIN</span>
-                <i class="fa-solid fa-globe text-slate-400 text-xl"></i>
-              </div>
-              <h3 class="text-xl font-bold text-white mb-3">Internet & Mercado Real</h3>
-              <ul class="space-y-3 text-sm text-slate-300">
-                <li class="flex items-start gap-2.5">
-                  <i class="fa-solid fa-chart-line text-emerald-400 mt-1"></i>
-                  <span><strong>Cotações Dinâmicas:</strong> Preço do Dólar e do ETH mudam a cada milissegundo.</span>
-                </li>
-                <li class="flex items-start gap-2.5">
-                  <i class="fa-solid fa-building-columns text-cyan-400 mt-1"></i>
-                  <span><strong>Múltiplas Corretoras:</strong> Binance, Coinbase e Uniswap têm preços ligeiramente diferentes.</span>
-                </li>
-                <li class="flex items-start gap-2.5">
-                  <i class="fa-solid fa-cloud-bolt text-amber-400 mt-1"></i>
-                  <span><strong>APIs Web2:</strong> Podem cair, atrasar ou responder valores diferentes por latência.</span>
-                </li>
-              </ul>
-            </div>
-            <div class="mt-4 pt-3 border-t border-slate-800 text-xs text-slate-400 font-mono-code">
-              Dado mutável e não-determinístico
-            </div>
-          </div>
-
-          <!-- Animated Oracle Bridge in Center -->
-          <div class="md:col-span-3 flex flex-col items-center justify-center px-2 py-4">
-            <div class="w-full bg-blue-950/60 border border-blue-500/40 rounded-2xl p-4 text-center relative overflow-hidden glow-active">
-              <i class="fa-solid fa-satellite-dish text-cyan-400 text-2xl mb-2"></i>
-              <h4 class="font-bold text-white text-base">ORÁCULO</h4>
-              <p class="text-xs text-blue-200 mt-1">Coleta, filtra, unifica e assina o dado</p>
-              <!-- Animated Flow Line -->
-              <div class="relative w-full h-6 mt-3 bg-slate-900/90 rounded-full overflow-hidden border border-slate-700 flex items-center">
-                <div class="packet-dot w-3 h-3 rounded-full bg-cyan-400 shadow-md shadow-cyan-400"></div>
-                <div class="packet-dot delay-1 w-3 h-3 rounded-full bg-blue-400 shadow-md shadow-blue-400"></div>
-                <div class="packet-dot delay-2 w-3 h-3 rounded-full bg-emerald-400 shadow-md shadow-emerald-400"></div>
-              </div>
-              <span class="font-mono-code text-[11px] text-cyan-300 mt-2 block">Transação On-Chain ➔</span>
-            </div>
-          </div>
-
-          <!-- On-Chain Side -->
-          <div class="md:col-span-4 bg-slate-900/90 border border-blue-500/30 rounded-2xl p-6 h-full flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between mb-4">
-                <span class="px-2.5 py-1 rounded-md bg-blue-500/20 text-cyan-300 font-mono-code text-xs">MUNDO ON-CHAIN</span>
-                <i class="fa-solid fa-link text-cyan-400 text-xl"></i>
-              </div>
-              <h3 class="text-xl font-bold text-white mb-3">Smart Contracts (Blockchain)</h3>
-              <ul class="space-y-3 text-sm text-slate-300">
-                <li class="flex items-start gap-2.5">
-                  <i class="fa-solid fa-box-archive text-cyan-400 mt-1"></i>
-                  <span><strong>Caixa-Preta Isolada:</strong> Só enxerga dados já gravados dentro dos próprios blocos.</span>
-                </li>
-                <li class="flex items-start gap-2.5">
-                  <i class="fa-solid fa-check-double text-emerald-400 mt-1"></i>
-                  <span><strong>Consenso Total:</strong> Todos os validadores precisam ler exatamente o mesmo número.</span>
-                </li>
-                <li class="flex items-start gap-2.5">
-                  <i class="fa-solid fa-code text-blue-400 mt-1"></i>
-                  <span><strong>Execução Automática:</strong> Libera empréstimos e liquidações baseados no preço do Oráculo.</span>
-                </li>
-              </ul>
-            </div>
-            <div class="mt-4 pt-3 border-t border-slate-800 text-xs text-cyan-400 font-mono-code">
-              Estado imutável e 100% determinístico
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ==========================================
-           SLIDE 3: POR QUE A BLOCKCHAIN NÃO FAZ HTTP? (SANDBOX + DETERMINISMO)
-           ========================================== -->
-      <section class="slide-view flex-col justify-between h-full" data-slide="2" data-steps="1">
-        <div>
-          <span class="font-mono-code text-xs text-amber-400 uppercase tracking-widest">02 • Travas Arquiteturais e Consenso</span>
-          <h2 class="text-3xl md:text-4xl font-bold text-white mt-1">Por que a Blockchain não faz requisições HTTP?</h2>
-          <p class="text-slate-400 text-sm md:text-base mt-1">
-            Não é apenas por variação de preço: a própria estrutura da máquina virtual proíbe chamadas externas.
-          </p>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 my-auto items-stretch">
-          <!-- Left: The 3 Technical Reasons -->
-          <div class="lg:col-span-6 flex flex-col justify-between space-y-3.5">
-            <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 flex items-start gap-4">
-              <div class="w-10 h-10 rounded-lg bg-red-500/15 border border-red-500/30 flex items-center justify-center text-red-400 shrink-0 mt-0.5">
-                <i class="fa-solid fa-ban"></i>
-              </div>
-              <div>
-                <h3 class="font-bold text-white text-base">1. Bloqueio Estrutural (Ambiente Sandbox)</h3>
-                <p class="text-xs md:text-sm text-slate-300 mt-1 leading-relaxed">
-                  A Máquina Virtual da Blockchain (EVM) é isolada por arquitetura. No código de máquina não existem instruções nativas (<code class="text-amber-300">opcodes</code>) para abrir sockets TCP/IP ou fazer um <code class="text-amber-300">GET HTTP</code>.
-                </p>
-              </div>
-            </div>
-
-            <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 flex items-start gap-4">
-              <div class="w-10 h-10 rounded-lg bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0 mt-0.5">
-                <i class="fa-solid fa-stopwatch"></i>
-              </div>
-              <div>
-                <h3 class="font-bold text-white text-base">2. Problema do Milissegundo (Quebra de Consenso)</h3>
-                <p class="text-xs md:text-sm text-slate-300 mt-1 leading-relaxed">
-                  Se você e um amigo pesquisarem o Dólar com <strong>1 milésimo de segundo</strong> de diferença, a API pode retornar valores diferentes. Se dois validadores recebem números diferentes, a blockchain trava!
-                </p>
-              </div>
-            </div>
-
-            <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 flex items-start gap-4">
-              <div class="w-10 h-10 rounded-lg bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-cyan-400 shrink-0 mt-0.5">
-                <i class="fa-solid fa-clock-rotate-left"></i>
-              </div>
-              <div>
-                <h3 class="font-bold text-white text-base">3. Reprodução Histórica no Futuro</h3>
-                <p class="text-xs md:text-sm text-slate-300 mt-1 leading-relaxed">
-                  Um computador novo que entrar na rede daqui a 5 anos precisa re-executar todos os blocos desde o início. Se a API externa tivesse saído do ar, seria impossível sincronizar.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Right: Interactive Simulator of Consensus Failure -->
-          <div class="lg:col-span-6 bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between">
-            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-              <div>
-                <span class="font-mono-code text-xs text-amber-400 uppercase">Simulador de Falha HTTP</span>
-                <h4 class="font-bold text-white text-base">O que aconteceria se houvesse HTTP On-Chain?</h4>
-              </div>
-              <button onclick="simulateHttpCall()" class="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-semibold text-white flex items-center gap-1.5 shadow">
-                <i class="fa-solid fa-rotate"></i> Testar Consulta Simultânea
-              </button>
-            </div>
-
-            <div class="space-y-3 my-4">
-              <div class="bg-slate-950 border border-slate-800 rounded-xl p-3.5 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                  <i class="fa-solid fa-server text-cyan-400"></i>
-                  <div>
-                    <p class="text-xs font-bold text-white">Você (Validador #1)</p>
-                    <p id="sim-time-1" class="text-[11px] font-mono-code text-slate-400">GET api.cambio/usd • t = 14:00:01.001s</p>
-                  </div>
-                </div>
-                <span id="sim-val-1" class="font-mono-code text-base font-bold text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-lg border border-emerald-500/30">
-                  R$ 5,8012
-                </span>
-              </div>
-
-              <div class="bg-slate-950 border border-slate-800 rounded-xl p-3.5 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                  <i class="fa-solid fa-server text-purple-400"></i>
-                  <div>
-                    <p class="text-xs font-bold text-white">Seu Amigo (Validador #2)</p>
-                    <p id="sim-time-2" class="text-[11px] font-mono-code text-slate-400">GET api.cambio/usd • t = 14:00:01.002s (+1ms)</p>
-                  </div>
-                </div>
-                <span id="sim-val-2" class="font-mono-code text-base font-bold text-amber-400 bg-amber-500/10 px-3 py-1 rounded-lg border border-amber-500/30">
-                  R$ 5,8019
-                </span>
-              </div>
-            </div>
-
-            <div class="bg-red-950/50 border border-red-500/40 rounded-xl p-3.5 flex items-center gap-3">
-              <i class="fa-solid fa-triangle-exclamation text-red-400 text-xl"></i>
-              <div class="text-xs text-red-200 leading-relaxed">
-                <strong>Resultado: Quebra de Consenso (Fork)!</strong> Como <code id="sim-diff-1">5,8012</code> ≠ <code id="sim-diff-2">5,8019</code>, os validadores discordam do estado do bloco. Por isso o dado precisa entrar <strong>já unificado via Oráculo</strong>.
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ==========================================
-           SLIDE 4: TRANSIÇÃO — PANORAMA DO MERCADO & FOCO NA CHAINLINK
-           ========================================== -->
-      <section class="slide-view flex-col justify-between h-full" data-slide="3" data-steps="1">
-        <div>
-          <span class="font-mono-code text-xs text-cyan-400 uppercase tracking-widest">03 • Panorama do Ecossistema</span>
-          <h2 class="text-3xl md:text-4xl font-bold text-white mt-1">Quem resolve esse problema no mercado?</h2>
-          <p class="text-slate-400 text-sm md:text-base mt-1">
-            Existem diversas redes de oráculos no mercado, mas vamos aprofundar na arquitetura da <strong class="text-white">Chainlink</strong>, a líder global do setor.
-          </p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 my-auto items-center">
-          <!-- Main Highlight: Chainlink -->
-          <div class="md:col-span-7 bg-gradient-to-br from-blue-950/90 via-slate-900 to-slate-900 border-2 border-blue-500/60 rounded-2xl p-6 shadow-2xl relative overflow-hidden">
-            <div class="flex items-center justify-between mb-4">
-              <span class="px-3 py-1 rounded-full bg-blue-500/20 border border-blue-400/40 text-cyan-300 font-mono-code text-xs font-semibold">
-                NOSSO ESTUDO DE CASO NA AULA
-              </span>
-              <span class="font-mono-code text-xs text-slate-400">+65% do Mercado DeFi</span>
-            </div>
-
-            <div class="flex items-center gap-4 mb-4">
-              <div class="w-14 h-14 rounded-2xl bg-[#2a5ada] flex items-center justify-center shadow-lg shrink-0">
-                <svg class="w-8 h-8 text-white" viewBox="0 0 38 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M19 0L0 11V33L19 44L38 33V11L19 0ZM30 28.37L19 34.74L8 28.37V15.63L19 9.26L30 15.63V28.37Z" fill="currentColor"/>
-                </svg>
-              </div>
-              <div>
-                <h3 class="text-2xl md:text-3xl font-bold text-white">Chainlink</h3>
-                <p class="text-sm text-cyan-300">Padrão ouro para feeds de preços (Ex: Par ETH/USD com +20 fontes)</p>
-              </div>
-            </div>
-
-            <p class="text-sm text-slate-300 leading-relaxed mb-5">
-              A Chainlink é a maior e mais utilizada infraestrutura de oráculos do mundo, garantindo dezenas de bilhões de dólares em protocolos como Aave, Compound e corretoras descentralizadas.
-            </p>
-
-            <div class="grid grid-cols-3 gap-3 pt-4 border-t border-slate-800/90 text-center">
-              <div class="bg-slate-950/60 rounded-xl p-3 border border-slate-800">
-                <span class="text-xl font-bold text-white block">3 Camadas</span>
-                <span class="text-[11px] text-slate-400">Agregação Progressiva</span>
-              </div>
-              <div class="bg-slate-950/60 rounded-xl p-3 border border-slate-800">
-                <span class="text-xl font-bold text-cyan-400 block">21 a 31 Nós</span>
-                <span class="text-[11px] text-slate-400">No par ETH/USD</span>
-              </div>
-              <div class="bg-slate-950/60 rounded-xl p-3 border border-slate-800">
-                <span class="text-xl font-bold text-emerald-400 block">Protocolo OCR</span>
-                <span class="text-[11px] text-slate-400">Consenso Off-Chain</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Other Oracles in the Market -->
-          <div class="md:col-span-5 bg-slate-900/90 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between h-full">
-            <div>
-              <span class="font-mono-code text-xs text-amber-400 uppercase">Outras Soluções no Mercado</span>
-              <h4 class="text-xl font-bold text-white mt-1 mb-3">A Chainlink é a única? Não!</h4>
-              <p class="text-xs md:text-sm text-slate-300 leading-relaxed mb-4">
-                Existem outras empresas de oráculos com arquiteturas diferentes (que veremos no final da aula para comparação):
-              </p>
-
-              <div class="space-y-3">
-                <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 flex items-center gap-3">
-                  <div class="w-8 h-8 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold text-xs shrink-0">PYTH</div>
-                  <div>
-                    <h5 class="text-xs font-bold text-white">Pyth Network</h5>
-                    <p class="text-[11px] text-slate-400">Focada em altíssima velocidade com dados enviados direto pelas corretoras.</p>
-                  </div>
-                </div>
-                <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 flex items-center gap-3">
-                  <div class="w-8 h-8 rounded-lg bg-rose-500/20 text-rose-400 flex items-center justify-center font-bold text-xs shrink-0">UMA</div>
-                  <div>
-                    <h5 class="text-xs font-bold text-white">UMA & RedStone</h5>
-                    <p class="text-[11px] text-slate-400">Oráculos otimistas (eventos do mundo real) e feeds modulares de baixo gas.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="mt-4 pt-3 border-t border-slate-800 text-xs text-cyan-300 flex items-center gap-2">
-              <i class="fa-solid fa-arrow-right"></i>
-              <span>Vamos abrir o capô da Chainlink passo a passo agora!</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ==========================================
-           SLIDE 5: PIPELINE DE 3 CAMADAS + FOCO NO NÍVEL 1 (2 SUB-PASSOS INTERATIVOS)
-           ========================================== -->
-      <section class="slide-view flex-col justify-between h-full" data-slide="4" data-steps="2">
-        <div class="flex flex-wrap items-center justify-between gap-2">
-          <div>
-            <span class="font-mono-code text-xs text-cyan-400 uppercase tracking-widest">04 • Arquitetura Chainlink (ETH/USD)</span>
-            <h2 class="text-3xl md:text-4xl font-bold text-white mt-1">O Pipeline de 3 Camadas de Dados</h2>
-          </div>
-          <!-- Sub-step selector pills -->
-          <div class="flex items-center gap-2 bg-slate-900 p-1.5 rounded-xl border border-slate-800">
-            <button onclick="setSubStep(0)" id="s4-btn-0" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white transition">
-              1. Visão Geral animada (3 Níveis)
-            </button>
-            <button onclick="setSubStep(1)" id="s4-btn-1" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition">
-              2. Aprofundando no Nível 1 (Corretoras)
-            </button>
-          </div>
-        </div>
-
-        <!-- Animated Pipeline Graphic (Always visible, highlights change per step) -->
-        <div class="grid grid-cols-1 md:grid-cols-11 gap-3 items-center my-3">
-          <!-- LEVEL 1 -->
-          <div id="s4-card-l1" onclick="setSubStep(1)" class="cursor-pointer md:col-span-3 bg-slate-900 border-2 border-cyan-400/80 rounded-2xl p-4 transition-all duration-300 relative">
-            <div class="flex items-center justify-between mb-2">
-              <span class="font-mono-code text-xs font-bold text-cyan-400">NÍVEL 1 • FONTES BRUTAS</span>
-              <i class="fa-solid fa-arrow-trend-up text-cyan-400"></i>
-            </div>
-            <h3 class="text-lg font-bold text-white">Corretoras (CEX & DEX)</h3>
-            <p class="text-xs text-slate-300 mt-1">Binance, Coinbase, Kraken, Bitstamp, OKX, Uniswap...</p>
-            <div class="mt-3 flex flex-wrap gap-1.5 font-mono-code text-[11px]">
-              <span class="bg-slate-950 px-2 py-0.5 rounded border border-slate-700 text-emerald-400">Binance: $2500.10</span>
-              <span class="bg-slate-950 px-2 py-0.5 rounded border border-slate-700 text-cyan-300">Coinbase: $2500.40</span>
-            </div>
-          </div>
-
-          <!-- Animated Connector 1 -> 2 -->
-          <div class="md:col-span-1 flex flex-col items-center justify-center">
-            <div class="w-full h-5 bg-slate-900 rounded-full relative overflow-hidden border border-slate-700">
-              <div class="packet-dot w-2.5 h-2.5 rounded-full bg-cyan-400"></div>
-              <div class="packet-dot delay-1 w-2.5 h-2.5 rounded-full bg-cyan-400"></div>
-            </div>
-            <span class="font-mono-code text-[10px] text-slate-400 mt-1">Dados Brutos</span>
-          </div>
-
-          <!-- LEVEL 2 -->
-          <div id="s4-card-l2" class="md:col-span-3 bg-slate-900 border border-slate-700 rounded-2xl p-4 transition-all duration-300">
-            <div class="flex items-center justify-between mb-2">
-              <span class="font-mono-code text-xs font-bold text-blue-400">NÍVEL 2 • TRATAMENTO</span>
-              <i class="fa-solid fa-filter text-blue-400"></i>
-            </div>
-            <h3 class="text-lg font-bold text-white">Agregadores de Dados</h3>
-            <p class="text-xs text-slate-300 mt-1">CoinGecko, Kaiko, Amberdata, BraveNewCoin, CryptoCompare...</p>
-            <div class="mt-3 flex flex-wrap gap-1.5 font-mono-code text-[11px]">
-              <span class="bg-slate-950 px-2 py-0.5 rounded border border-slate-700 text-blue-300">VWAP + Filtros</span>
-            </div>
-          </div>
-
-          <!-- Animated Connector 2 -> 3 -->
-          <div class="md:col-span-1 flex flex-col items-center justify-center">
-            <div class="w-full h-5 bg-slate-900 rounded-full relative overflow-hidden border border-slate-700">
-              <div class="packet-dot delay-1 w-2.5 h-2.5 rounded-full bg-blue-400"></div>
-              <div class="packet-dot delay-2 w-2.5 h-2.5 rounded-full bg-blue-400"></div>
-            </div>
-            <span class="font-mono-code text-[10px] text-slate-400 mt-1">Preço Limpo</span>
-          </div>
-
-          <!-- LEVEL 3 -->
-          <div id="s4-card-l3" class="md:col-span-3 bg-slate-900 border border-slate-700 rounded-2xl p-4 transition-all duration-300">
-            <div class="flex items-center justify-between mb-2">
-              <span class="font-mono-code text-xs font-bold text-amber-400">NÍVEL 3 • CONSENSO DON</span>
-              <i class="fa-solid fa-network-wired text-amber-400"></i>
-            </div>
-            <h3 class="text-lg font-bold text-white">Nós da Chainlink</h3>
-            <p class="text-xs text-slate-300 mt-1">21 a 31 operadores independentes unificando a Mediana Off-Chain.</p>
-            <div class="mt-3 flex flex-wrap gap-1.5 font-mono-code text-[11px]">
-              <span class="bg-slate-950 px-2 py-0.5 rounded border border-amber-500/40 text-amber-300">1 Tx ➔ Smart Contract</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Dynamic Bottom Detail Box (Changes between Step 0 and Step 1) -->
-        <div id="s4-detail-0" class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5">
-          <div class="flex items-center gap-3 mb-2">
-            <span class="px-2.5 py-0.5 rounded bg-blue-500/20 text-cyan-300 font-mono-code text-xs">VISÃO GERAL DA CASCATA</span>
-            <h4 class="font-bold text-white text-base">Como as mais de 20 fontes se conectam?</h4>
-          </div>
-          <p class="text-sm text-slate-300 leading-relaxed">
-            Os nós da Chainlink (Nível 3) <strong>não batem diretamente</strong> na API de uma única corretora. O dado nasce nas negociações reais das <strong>Corretoras (Nível 1)</strong>, é coletado e limpo por empresas <strong>Agregadoras de Mercado (Nível 2)</strong> e só então é consultado pelos <strong>Nós Operadores (Nível 3)</strong>.
-          </p>
-        </div>
-
-        <div id="s4-detail-1" class="hidden bg-gradient-to-r from-cyan-950/60 to-slate-900 border-2 border-cyan-500/50 rounded-2xl p-5">
-          <div class="flex items-center justify-between mb-2">
-            <div class="flex items-center gap-3">
-              <span class="px-2.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-mono-code text-xs font-bold">ZOOM NO NÍVEL 1 • CORTE DE ENTRADA</span>
-              <h4 class="font-bold text-white text-lg">O que acontece no Nível 1 (Corretoras Brutas)?</h4>
-            </div>
-            <span class="font-mono-code text-xs text-cyan-300">Por que não parar aqui?</span>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3 text-xs md:text-sm">
-            <div class="bg-slate-950/80 p-3.5 rounded-xl border border-slate-800">
-              <strong class="text-white block mb-1">1. Onde o preço nasce</strong>
-              <span class="text-slate-300">Milhões de usuários compram e vendem ETH na Binance, Coinbase, Kraken e Uniswap gerando dados brutos de negociações a cada segundo.</span>
-            </div>
-            <div class="bg-slate-950/80 p-3.5 rounded-xl border border-slate-800">
-              <strong class="text-amber-300 block mb-1">2. O risco de uma fonte só</strong>
-              <span class="text-slate-300">Se o oráculo olhasse apenas uma corretora, uma queda de API ou uma ordem gigante de um "baleia" naquela corretora quebraria os protocolos DeFi.</span>
-            </div>
-            <div class="bg-slate-950/80 p-3.5 rounded-xl border border-slate-800">
-              <strong class="text-cyan-300 block mb-1">3. A passagem para o Nível 2</strong>
-              <span class="text-slate-300">Por isso, os Agregadores do Nível 2 puxam o fluxo bruto de <strong>dezenas de corretoras do Nível 1</strong> simultaneamente para limpar distorções!</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ==========================================
-           SLIDE 6: NÍVEL 2 — OS 3 FILTROS INTERATIVOS NO MESMO SLIDE (3 SUB-PASSOS)
-           ========================================== -->
-      <section class="slide-view flex-col justify-between h-full" data-slide="5" data-steps="3">
-        <div class="flex flex-wrap items-center justify-between gap-2">
-          <div>
-            <span class="font-mono-code text-xs text-blue-400 uppercase tracking-widest">05 • Nível 2: Agregadores de Dados (CoinGecko, Kaiko, Amberdata)</span>
-            <h2 class="text-2xl md:text-3xl font-bold text-white mt-0.5">Como o Nível 2 limpa e consolida os dados do Nível 1?</h2>
-          </div>
-        </div>
-
-        <!-- Top Selector Cards (The 3 Filters) -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-2">
-          <button onclick="setSubStep(0)" id="s5-tab-0" class="text-left p-4 rounded-xl border-2 transition-all duration-300 bg-blue-950/50 border-cyan-400 shadow-lg">
-            <div class="flex items-center justify-between mb-1">
-              <span class="font-mono-code text-xs text-cyan-300 font-bold">FILTRO 1 DE 3</span>
-              <i class="fa-solid fa-scale-balanced text-cyan-400 text-lg"></i>
-            </div>
-            <h3 class="text-lg font-bold text-white">1. Cálculo VWAP</h3>
-            <p class="text-xs text-slate-300 mt-0.5">Preço Médio Ponderado por Volume negociado.</p>
-          </button>
-
-          <button onclick="setSubStep(1)" id="s5-tab-1" class="text-left p-4 rounded-xl border transition-all duration-300 bg-slate-900/80 border-slate-800 opacity-75 hover:opacity-100">
-            <div class="flex items-center justify-between mb-1">
-              <span class="font-mono-code text-xs text-blue-400 font-bold">FILTRO 2 DE 3</span>
-              <i class="fa-solid fa-layer-group text-blue-400 text-lg"></i>
-            </div>
-            <h3 class="text-lg font-bold text-white">2. Profundidade de Livro</h3>
-            <p class="text-xs text-slate-300 mt-0.5">Variabilidade de oferta e demanda por corretora.</p>
-          </button>
-
-          <button onclick="setSubStep(2)" id="s5-tab-2" class="text-left p-4 rounded-xl border transition-all duration-300 bg-slate-900/80 border-slate-800 opacity-75 hover:opacity-100">
-            <div class="flex items-center justify-between mb-1">
-              <span class="font-mono-code text-xs text-amber-400 font-bold">FILTRO 3 DE 3</span>
-              <i class="fa-solid fa-shield-halved text-amber-400 text-lg"></i>
-            </div>
-            <h3 class="text-lg font-bold text-white">3. Detecção de Wash Trading</h3>
-            <p class="text-xs text-slate-300 mt-0.5">Bloqueio de volume artificial entre robôs.</p>
-          </button>
-        </div>
-
-        <!-- EXPANDED STAGE FOR FILTER 1: VWAP -->
-        <div id="s5-panel-0" class="bg-slate-900 border border-cyan-500/40 rounded-2xl p-6 flex-1 flex flex-col justify-between">
-          <div>
-            <span class="font-mono-code text-xs text-cyan-400 uppercase">Filtro 1 em Destaque • Volume-Weighted Average Price</span>
-            <h4 class="text-xl font-bold text-white mt-0.5">Como o VWAP protege o preço contra corretoras pequenas?</h4>
-            <p class="text-xs md:text-sm text-slate-300 mt-1">
-              Em vez de tirar uma média simples, o agregador dá <strong>peso proporcional ao volume financeiro real</strong> de cada corretora:
-            </p>
-          </div>
-
-          <div class="space-y-3 my-auto">
-            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
-              <div class="flex justify-between text-xs font-bold mb-1.5">
-                <span class="text-white">Corretora A (Ex: Binance) — Volume: $500 Milhões • Preço ETH: $2.500</span>
-                <span class="text-cyan-400 font-mono-code">Peso no Cálculo: 82%</span>
-              </div>
-              <div class="w-full bg-slate-800 h-3 rounded-full overflow-hidden">
-                <div class="bg-gradient-to-r from-blue-600 to-cyan-400 h-full rounded-full" style="width: 82%"></div>
-              </div>
-            </div>
-
-            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
-              <div class="flex justify-between text-xs font-bold mb-1.5">
-                <span class="text-white">Corretora B (Ex: Coinbase) — Volume: $110 Milhões • Preço ETH: $2.501</span>
-                <span class="text-blue-400 font-mono-code">Peso no Cálculo: 18%</span>
-              </div>
-              <div class="w-full bg-slate-800 h-3 rounded-full overflow-hidden">
-                <div class="bg-blue-500 h-full rounded-full" style="width: 18%"></div>
-              </div>
-            </div>
-
-            <div class="bg-slate-950 p-3 rounded-xl border border-red-500/30">
-              <div class="flex justify-between text-xs font-bold mb-1.5">
-                <span class="text-red-300">Corretora C (Pequena) — Volume: $1 Milhão • Preço distorcido: $2.580</span>
-                <span class="text-red-400 font-mono-code">Impacto quase zero (~0,1%)</span>
-              </div>
-              <div class="w-full bg-slate-800 h-3 rounded-full overflow-hidden">
-                <div class="bg-red-500 h-full rounded-full" style="width: 1.5%"></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="text-xs text-emerald-300 font-mono-code flex items-center justify-between pt-2 border-t border-slate-800">
-            <span>Resultado Consolidado VWAP: ~$2.500,18 (Ancorado onde há mais dinheiro real)</span>
-          </div>
-        </div>
-
-        <!-- EXPANDED STAGE FOR FILTER 2: ORDER BOOK DEPTH -->
-        <div id="s5-panel-1" class="hidden bg-slate-900 border border-blue-500/40 rounded-2xl p-6 flex-1 flex flex-col justify-between">
-          <div>
-            <span class="font-mono-code text-xs text-blue-400 uppercase">Filtro 2 em Destaque • Análise de Profundidade de Livro (Order Book Depth)</span>
-            <h4 class="text-xl font-bold text-white mt-0.5">Medindo a variabilidade de oferta e demanda por corretora</h4>
-            <p class="text-xs md:text-sm text-slate-300 mt-1">
-              Avalia quantos milhões em ordens reais de compra e venda estão empilhados no livro da corretora para impedir manipulações baratas.
-            </p>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-auto">
-            <div class="bg-slate-950 border border-emerald-500/30 rounded-xl p-4">
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-xs font-bold text-emerald-400 uppercase font-mono-code">Livro Profundo (Alta Liquidez)</span>
-                <span class="text-xs bg-emerald-500/10 text-emerald-300 px-2 py-0.5 rounded">Aprovado</span>
-              </div>
-              <p class="text-xs text-slate-300 mb-3">
-                Existem dezenas de milhões de dólares em ordens a $2.499, $2.498, $2.501.
-              </p>
-              <div class="bg-slate-900 p-2.5 rounded-lg text-xs font-mono-code text-slate-200 border border-slate-800">
-                Ordem de $5 Milhões ➔ Preço varia só <strong>0,1%</strong>
-              </div>
-            </div>
-
-            <div class="bg-slate-950 border border-red-500/30 rounded-xl p-4">
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-xs font-bold text-red-400 uppercase font-mono-code">Livro Raso (Alta Variabilidade)</span>
-                <span class="text-xs bg-red-500/10 text-red-300 px-2 py-0.5 rounded">Peso Reduzido / Cortado</span>
-              </div>
-              <p class="text-xs text-slate-300 mb-3">
-                Poucas ordens na fila de oferta e demanda. Qualquer compra pequena derruba ou explode a cotação.
-              </p>
-              <div class="bg-slate-900 p-2.5 rounded-lg text-xs font-mono-code text-red-300 border border-red-900/40">
-                Ordem de apenas $1.000 ➔ Preço salta <strong>+12%</strong>!
-              </div>
-            </div>
-          </div>
-
-          <div class="text-xs text-blue-300 font-mono-code flex items-center justify-between pt-2 border-t border-slate-800">
-            <span>Resumo: Corretoras com alta variabilidade e pouca liquidez no livro são descartadas.</span>
-          </div>
-        </div>
-
-        <!-- EXPANDED STAGE FOR FILTER 3: WASH TRADING -->
-        <div id="s5-panel-2" class="hidden bg-slate-900 border border-amber-500/40 rounded-2xl p-6 flex-1 flex flex-col justify-between">
-          <div>
-            <span class="font-mono-code text-xs text-amber-400 uppercase">Filtro 3 em Destaque • Anti-Fraude de Volume</span>
-            <h4 class="text-xl font-bold text-white mt-0.5">O que é Detecção de Wash Trading?</h4>
-            <p class="text-xs md:text-sm text-slate-300 mt-1">
-              Impede que um atacante ou corretora mal-intencionada compre e venda para si mesmo com robôs apenas para inflar o volume e enganar o VWAP.
-            </p>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-12 gap-4 my-auto items-center">
-            <div class="md:col-span-7 bg-slate-950 border border-slate-800 rounded-xl p-4 flex items-center justify-between relative">
-              <div class="text-center">
-                <div class="w-12 h-12 rounded-xl bg-red-500/15 border border-red-500/40 flex items-center justify-center text-red-400 mx-auto mb-1">
-                  <i class="fa-solid fa-robot text-xl"></i>
-                </div>
-                <span class="font-mono-code text-xs font-bold text-white block">Robô Conta A</span>
-                <span class="text-[11px] text-slate-400">Vende 10.000 ETH</span>
-              </div>
-
-              <!-- Animated Ping Pong Fake Trade -->
-              <div class="flex-1 px-4 flex flex-col items-center">
-                <span class="font-mono-code text-[11px] text-red-400 mb-1">Volume Falso Repetitivo ($0 taxa)</span>
-                <div class="w-full h-7 bg-slate-900 rounded-full border border-red-500/30 flex items-center px-2 relative overflow-hidden">
-                  <div class="wash-packet px-2 py-0.5 rounded bg-red-500 text-[10px] font-mono-code font-bold text-white">
-                    ⇄ $3.000
-                  </div>
-                </div>
-                <span class="font-mono-code text-[11px] text-amber-400 mt-1">Detectado pelo Algoritmo!</span>
-              </div>
-
-              <div class="text-center">
-                <div class="w-12 h-12 rounded-xl bg-red-500/15 border border-red-500/40 flex items-center justify-center text-red-400 mx-auto mb-1">
-                  <i class="fa-solid fa-robot text-xl"></i>
-                </div>
-                <span class="font-mono-code text-xs font-bold text-white block">Robô Conta B</span>
-                <span class="text-[11px] text-slate-400">Compra da Conta A</span>
-              </div>
-            </div>
-
-            <div class="md:col-span-5 bg-amber-950/30 border border-amber-500/30 rounded-xl p-4 text-xs text-slate-200 space-y-2">
-              <div class="flex items-center gap-2 text-amber-400 font-bold text-sm">
-                <i class="fa-solid fa-magnifying-glass-chart"></i>
-                <span>Como o Nível 2 bloqueia isso?</span>
-              </div>
-              <p class="leading-relaxed">
-                Os agregadores cruzam o volume reportado com a profundidade real do livro e padrões estatísticos das ordens. Negociações artificiais entram em <strong>blacklist</strong> e têm peso zerado!
-              </p>
-            </div>
-          </div>
-
-          <div class="text-xs text-amber-300 font-mono-code flex items-center justify-between pt-2 border-t border-slate-800">
-            <span>Agora o preço do Nível 2 está limpo, ponderado e auditado!</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- ==========================================
-           SLIDE 7: NÍVEL 3 — INTRODUÇÃO À REDE DE NÓS OPERADORES (DON)
-           ========================================== -->
-      <section class="slide-view flex-col justify-between h-full" data-slide="6" data-steps="1">
-        <div>
-          <span class="font-mono-code text-xs text-amber-400 uppercase tracking-widest">06 • Nível 3: Decentralized Oracle Network (DON)</span>
-          <h2 class="text-3xl md:text-4xl font-bold text-white mt-1">O que é a Rede de Nós Operadores da Chainlink?</h2>
-          <p class="text-slate-400 text-sm md:text-base mt-1">
-            São servidores independentes que operam <strong class="text-white">fora da blockchain principal (Off-Chain)</strong> para buscar e validar os dados do Nível 2.
-          </p>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 my-auto items-center">
-          <!-- Left Explanation & Big Numbers -->
-          <div class="lg:col-span-6 space-y-4">
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
-              <h3 class="text-lg font-bold text-cyan-300 mb-2 flex items-center gap-2">
-                <i class="fa-solid fa-server"></i> O que é um "Nó Operador" na prática?
-              </h3>
-              <p class="text-xs md:text-sm text-slate-300 leading-relaxed">
-                Cada nó é um servidor de alta disponibilidade mantido por empresas de infraestrutura e telecomunicações independentes (como <strong>Deutsche Telekom, Swisscom, Blockdaemon, Infura</strong>) rodando o software da Chainlink 24h por dia em uma rede isolada Off-Chain.
-              </p>
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
-              <div class="bg-slate-900 border border-blue-500/40 rounded-2xl p-4 text-center">
-                <span class="text-4xl md:text-5xl font-bold text-cyan-400 font-display block">21 a 31</span>
-                <span class="text-xs font-bold text-white mt-1 block">Nós Operadores (ETH/USD)</span>
-                <span class="text-[11px] text-slate-400">Trabalhando em paralelo off-chain</span>
-              </div>
-              <div class="bg-slate-900 border border-amber-500/40 rounded-2xl p-4 text-center">
-                <span class="text-4xl md:text-5xl font-bold text-amber-400 font-display block">Mín. 21</span>
-                <span class="text-xs font-bold text-white mt-1 block">Quórum de Validação</span>
-                <span class="text-[11px] text-slate-400">Assinaturas exigidas por rodada</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Right Visual: How 1 Single Node aggregates multiple Level 2 providers -->
-          <div class="lg:col-span-6 bg-slate-900 border border-slate-800 rounded-2xl p-6">
-            <span class="font-mono-code text-xs text-cyan-400 uppercase block mb-2">Dentro de cada Nó Operador</span>
-            <h4 class="text-lg font-bold text-white mb-4">Cada nó consulta vários Agregadores de Nível 2 e tira sua própria Mediana:</h4>
-
-            <div class="flex items-center justify-between gap-3">
-              <!-- Level 2 APIs -->
-              <div class="space-y-2.5 flex-1">
-                <div class="bg-slate-950 border border-slate-800 px-3 py-2 rounded-lg flex justify-between text-xs font-mono-code">
-                  <span class="text-slate-300">CoinGecko API</span>
-                  <span class="text-cyan-400">$2.500,10</span>
-                </div>
-                <div class="bg-slate-950 border border-cyan-500/50 px-3 py-2 rounded-lg flex justify-between text-xs font-mono-code">
-                  <span class="text-white font-bold">Kaiko API (Meio)</span>
-                  <span class="text-emerald-400 font-bold">$2.500,20</span>
-                </div>
-                <div class="bg-slate-950 border border-slate-800 px-3 py-2 rounded-lg flex justify-between text-xs font-mono-code">
-                  <span class="text-slate-300">Amberdata API</span>
-                  <span class="text-cyan-400">$2.500,45</span>
-                </div>
-              </div>
-
-              <div class="text-cyan-400 text-xl">
-                <i class="fa-solid fa-angles-right"></i>
-              </div>
-
-              <!-- Single Node Box -->
-              <div class="bg-blue-950/70 border-2 border-blue-500 rounded-2xl p-4 text-center w-48 shrink-0">
-                <i class="fa-solid fa-microchip text-cyan-300 text-2xl mb-1"></i>
-                <h5 class="text-sm font-bold text-white">Nó Operador #01</h5>
-                <p class="text-[11px] text-blue-200 mt-1">Calcula a Mediana Local:</p>
-                <div class="mt-2 bg-slate-950 py-1.5 px-2 rounded-lg font-mono-code text-sm font-bold text-emerald-400 border border-emerald-500/40">
-                  $2.500,20
-                </div>
-              </div>
-            </div>
-
-            <p class="text-xs text-slate-400 mt-4 pt-3 border-t border-slate-800">
-              <i class="fa-solid fa-circle-info text-cyan-400 mr-1"></i>
-              Como todos os 31 nós fazem isso ao mesmo tempo, precisamos agora juntar as respostas dos 31 nós em um único número!
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <!-- ==========================================
-           SLIDE 8: EVOLUÇÃO DO PROTOCOLO OCR (MODELO ANTIGO ON-CHAIN VS ATUAL OFF-CHAIN P2P)
-           ========================================== -->
-      <section class="slide-view flex-col justify-between h-full" data-slide="7" data-steps="1">
-        <div>
-          <span class="font-mono-code text-xs text-cyan-400 uppercase tracking-widest">07 • Protocolo Off-Chain Reporting (OCR)</span>
-          <h2 class="text-3xl md:text-4xl font-bold text-white mt-1">Como os nós se comunicam? (Modelo Antigo vs. OCR Atual)</h2>
-          <p class="text-slate-400 text-sm md:text-base mt-1">
-            Por que a Chainlink tirou a organização e o cálculo de dentro do Smart Contract e levou para uma rede P2P Off-Chain?
-          </p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto items-stretch">
-          <!-- Old Model -->
-          <div class="bg-slate-900/90 border border-red-500/30 rounded-2xl p-6 flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between mb-3">
-                <span class="px-2.5 py-1 rounded bg-red-500/15 text-red-400 font-mono-code text-xs font-bold">ANTIGamente • ON-CHAIN AGGREGATION</span>
-                <i class="fa-solid fa-fire-flame-curved text-red-400 text-lg"></i>
-              </div>
-              <h3 class="text-xl font-bold text-white mb-3">Custo de Gas Explosivo na Rede</h3>
-              <ul class="space-y-3 text-xs md:text-sm text-slate-300">
-                <li class="flex items-start gap-2.5">
-                  <i class="fa-solid fa-xmark text-red-400 mt-1"></i>
-                  <span><strong>Transações Separadas:</strong> Cada um dos 21 a 31 nós enviava sua própria transação individual direto para a Ethereum.</span>
-                </li>
-                <li class="flex items-start gap-2.5">
-                  <i class="fa-solid fa-xmark text-red-400 mt-1"></i>
-                  <span><strong>Ordenação e Mediana no Smart Contract:</strong> O próprio contrato na blockchain precisava armazenar cada envio, organizar a lista e calcular a mediana <em>on-chain</em>.</span>
-                </li>
-                <li class="flex items-start gap-2.5">
-                  <i class="fa-solid fa-coins text-amber-400 mt-1"></i>
-                  <span><strong>Consequência:</strong> Gastava muito mais processamento na EVM e multiplicava o custo de Gas a cada atualização!</span>
-                </li>
-              </ul>
-            </div>
-
-            <div class="mt-4 bg-red-950/40 border border-red-500/30 rounded-xl p-3 font-mono-code text-xs text-red-300 text-center">
-              31 Transações + Processamento Pesado On-Chain = Gas Altíssimo
-            </div>
-          </div>
-
-          <!-- Current OCR Model -->
-          <div class="bg-gradient-to-b from-blue-950/60 to-slate-900 border-2 border-cyan-400/60 rounded-2xl p-6 flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between mb-3">
-                <span class="px-2.5 py-1 rounded bg-cyan-500/20 text-cyan-300 font-mono-code text-xs font-bold">HOJE • PROTOCOLO OCR (P2P OFF-CHAIN)</span>
-                <i class="fa-solid fa-bolt text-cyan-400 text-lg"></i>
-              </div>
-              <h3 class="text-xl font-bold text-white mb-3">Consenso P2P e Eleição de Líder</h3>
-              <ul class="space-y-3 text-xs md:text-sm text-slate-200">
-                <li class="flex items-start gap-2.5">
-                  <i class="fa-solid fa-check text-emerald-400 mt-1"></i>
-                  <span><strong>Conversa P2P Gratuita:</strong> Os 31 nós conversam entre si fora da blockchain (via rede P2P), onde trocar dados custa <strong>zero de Gas</strong>.</span>
-                </li>
-                <li class="flex items-start gap-2.5">
-                  <i class="fa-solid fa-check text-emerald-400 mt-1"></i>
-                  <span><strong>Rodada de Eleição de Líder:</strong> A cada rodada é escolhido um nó <strong>Líder</strong>, que coleta os valores assinados com a chave privada de cada nó.</span>
-                </li>
-                <li class="flex items-start gap-2.5">
-                  <i class="fa-solid fa-check text-emerald-400 mt-1"></i>
-                  <span><strong>1 Única Transação:</strong> O Líder já organiza tudo em um array ordenado off-chain e envia <strong>uma única transação</strong> para o Smart Contract!</span>
-                </li>
-              </ul>
-            </div>
-
-            <div class="mt-4 bg-emerald-950/50 border border-emerald-500/40 rounded-xl p-3 font-mono-code text-xs text-emerald-300 text-center">
-              Redução de até 90% no custo de Gas na rede Ethereum!
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ==========================================
-           SLIDE 9: DA RODADA P2P AO SMART CONTRACT (ASSINATURA, ARRAY E MEDIANA)
-           ========================================== -->
-      <section class="slide-view flex-col justify-between h-full" data-slide="8" data-steps="1">
-        <div>
-          <span class="font-mono-code text-xs text-cyan-400 uppercase tracking-widest">08 • Unificação e Validação On-Chain</span>
-          <h2 class="text-3xl md:text-4xl font-bold text-white mt-1">Do Nó Líder até o Contrato Agregador na Ethereum</h2>
-          <p class="text-slate-400 text-sm md:text-base mt-1">
-            Como o Líder monta o pacote e o que o Smart Contract confere antes de gravar o preço no Bloco.
-          </p>
-        </div>
-
-        <!-- 4 Step Connected Flow -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 my-auto">
-          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between">
-            <div>
-              <span class="w-8 h-8 rounded-lg bg-blue-600 text-white font-mono-code font-bold text-sm flex items-center justify-center mb-3">1</span>
-              <h3 class="text-base font-bold text-white mb-2">Assinatura com Chave Privada</h3>
-              <p class="text-xs text-slate-300 leading-relaxed">
-                Cada nó envia seu preço ao Líder junto com uma <strong>assinatura digital criptográfica</strong> feita com sua chave privada exclusiva.
-              </p>
-            </div>
-            <div class="mt-4 pt-2 border-t border-slate-800 font-mono-code text-[11px] text-cyan-400">
-              Impede falsificação de nós
-            </div>
-          </div>
-
-          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between">
-            <div>
-              <span class="w-8 h-8 rounded-lg bg-blue-600 text-white font-mono-code font-bold text-sm flex items-center justify-center mb-3">2</span>
-              <h3 class="text-base font-bold text-white mb-2">Array Ordenado & Envio (Mempool)</h3>
-              <p class="text-xs text-slate-300 leading-relaxed">
-                Com no mínimo 21 assinaturas, o Líder organiza os preços em um <strong>array em ordem crescente</strong> e dispara <strong>1 transação</strong> para a fila da Mempool.
-              </p>
-            </div>
-            <div class="mt-4 pt-2 border-t border-slate-800 font-mono-code text-[11px] text-cyan-400">
-              [2499.9, 2500.0, 2500.2...]
-            </div>
-          </div>
-
-          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between">
-            <div>
-              <span class="w-8 h-8 rounded-lg bg-blue-600 text-white font-mono-code font-bold text-sm flex items-center justify-center mb-3">3</span>
-              <h3 class="text-base font-bold text-white mb-2">Validação no Smart Contract</h3>
-              <p class="text-xs text-slate-300 leading-relaxed">
-                Quando entra no bloco, o <strong>Contrato Agregador</strong> verifica se as assinaturas são autênticas e confere se o array está ordenado.
-              </p>
-            </div>
-            <div class="mt-4 pt-2 border-t border-slate-800 font-mono-code text-[11px] text-amber-400">
-              Checagem 100% On-Chain
-            </div>
-          </div>
-
-          <div class="bg-blue-950/60 border-2 border-cyan-400/60 rounded-2xl p-5 flex flex-col justify-between">
-            <div>
-              <span class="w-8 h-8 rounded-lg bg-cyan-400 text-slate-950 font-mono-code font-bold text-sm flex items-center justify-center mb-3">4</span>
-              <h3 class="text-base font-bold text-white mb-2">Extração da Mediana & Gravação</h3>
-              <p class="text-xs text-slate-200 leading-relaxed">
-                O contrato pega exatamente o <strong>valor do meio (Mediana)</strong> e grava o novo preço oficial na memória do <strong>Bloco da Blockchain</strong>.
-              </p>
-            </div>
-            <div class="mt-4 pt-2 border-t border-blue-800 font-mono-code text-[11px] text-emerald-400">
-              Imune a extremos/hackers!
-            </div>
-          </div>
-        </div>
-
-        <!-- Visual Median vs Average Callout -->
-        <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 flex flex-wrap items-center justify-between gap-4">
-          <div class="flex items-center gap-3">
-            <i class="fa-solid fa-shield-virus text-emerald-400 text-xl"></i>
-            <span class="text-xs md:text-sm text-slate-200">
-              <strong>Por que Mediana e não Média?</strong> Se 1 nó for invadido e reportar <code class="text-red-400">$999.999</code>, a média quebraria; mas na <strong>Mediana</strong> ele fica na ponta do array e é 100% ignorado!
-            </span>
-          </div>
-          <div class="font-mono-code text-xs bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800">
-            [$2499, $2500, <strong class="text-emerald-400 underline">$2500 (Mediana)</strong>, $2501, <span class="text-red-400 line-through">$999.999</span>]
-          </div>
-        </div>
-      </section>
-
-      <!-- ==========================================
-           SLIDE 10: FREQUÊNCIA DE CONSOLIDAÇÃO (GATILHOS DE DESVIO E TEMPO)
-           ========================================== -->
-      <section class="slide-view flex-col justify-between h-full" data-slide="9" data-steps="1">
-        <div>
-          <span class="font-mono-code text-xs text-amber-400 uppercase tracking-widest">09 • Quando o Oráculo posta na rede?</span>
-          <h2 class="text-3xl md:text-4xl font-bold text-white mt-1">Frequência de Consolidação (Sistema de Duplo Gatilho)</h2>
-          <p class="text-slate-400 text-sm md:text-base mt-1">
-            Para economizar Gas sem deixar o preço defasado, uma nova atualização na blockchain é disparada de duas formas:
-          </p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto">
-          <!-- Trigger 1: Deviation Threshold -->
-          <div class="bg-slate-900 border-2 border-cyan-500/40 rounded-2xl p-6 flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between mb-4">
-                <span class="px-3 py-1 rounded-full bg-cyan-500/15 text-cyan-300 font-mono-code text-xs font-bold">GATILHO 1 • POR VARIAÇÃO DE PREÇO</span>
-                <i class="fa-solid fa-bolt-lightning text-cyan-400 text-xl"></i>
-              </div>
-              <div class="flex items-baseline gap-3 mb-3">
-                <span class="text-5xl font-bold font-display text-cyan-400">0,5%</span>
-                <span class="text-lg font-bold text-white">Limiar de Desvio (Deviation Threshold)</span>
-              </div>
-              <p class="text-xs md:text-sm text-slate-300 leading-relaxed">
-                Os nós monitoram o mercado off-chain segundo a segundo. Sempre que o preço real variar <strong>0,5% para cima ou para baixo</strong> em relação ao último valor gravado no Smart Contract, uma rodada OCR é disparada imediatamente!
-              </p>
-            </div>
-            <div class="mt-5 pt-3 border-t border-slate-800 text-xs text-slate-400 font-mono-code">
-              Em dias de alta volatilidade, atualiza várias vezes por minuto.
-            </div>
-          </div>
-
-          <!-- Trigger 2: Heartbeat -->
-          <div class="bg-slate-900 border-2 border-amber-500/40 rounded-2xl p-6 flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between mb-4">
-                <span class="px-3 py-1 rounded-full bg-amber-500/15 text-amber-300 font-mono-code text-xs font-bold">GATILHO 2 • POR TEMPO MÁXIMO</span>
-                <i class="fa-solid fa-heart-pulse text-amber-400 text-xl"></i>
-              </div>
-              <div class="flex items-baseline gap-3 mb-3">
-                <span class="text-5xl font-bold font-display text-amber-400">60 min</span>
-                <span class="text-lg font-bold text-white">Heartbeat (Tempo Máximo de Intervalo)</span>
-              </div>
-              <p class="text-xs md:text-sm text-slate-300 leading-relaxed">
-                E se o mercado ficar parado e o ETH não variar 0,5%? Existe um cronômetro regressivo de <strong>1 hora (3600s)</strong>. Quando o tempo zera, os nós são obrigados a atualizar o contrato para provar que o oráculo continua ativo.
-              </p>
-            </div>
-            <div class="mt-5 pt-3 border-t border-slate-800 text-xs text-slate-400 font-mono-code">
-              Garante que nenhum contrato leia um preço "congelado" antigo.
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ==========================================
-           SLIDE 11: CONCORRÊNCIA NO MESMO BLOCO & BOTS DE OEV (EXPLICAÇÃO + TABELA VISUAL)
-           ========================================== -->
-      <section class="slide-view flex-col justify-between h-full" data-slide="10" data-steps="1">
-        <div>
-          <span class="font-mono-code text-xs text-amber-400 uppercase tracking-widest">10 • Ordem no Bloco, Mempool e OEV</span>
-          <h2 class="text-2xl md:text-3xl font-bold text-white mt-0.5">
-            "E se duas pessoas operarem no mesmo bloco em que o preço muda?"
-          </h2>
-          <p class="text-slate-400 text-xs md:text-sm mt-0.5">
-            Na blockchain as transações rodam em fila sequencial. Quem entra antes da Chainlink lê o preço antigo; quem entra depois lê o preço novo.
-          </p>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 my-auto items-stretch">
-          <!-- Left Explanatory Cards (Requested by User to enrich the slide alongside the table) -->
-          <div class="lg:col-span-5 flex flex-col justify-between space-y-3">
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
-              <h3 class="text-sm font-bold text-cyan-300 flex items-center gap-2">
-                <i class="fa-solid fa-layer-group"></i> 1. Leitura sem requisição externa
-              </h3>
-              <p class="text-xs text-slate-300 mt-1 leading-relaxed">
-                Quando um usuário faz uma compra ou empréstimo, o contrato lê a variável já salva na memória da blockchain. Portanto, tudo depende da <strong>posição na fila do bloco</strong>.
-              </p>
-            </div>
-
-            <div class="bg-slate-900 border border-amber-500/40 rounded-xl p-4">
-              <h3 class="text-sm font-bold text-amber-400 flex items-center gap-2">
-                <i class="fa-solid fa-eye"></i> 2. Mempool Pública e OEV
-              </h3>
-              <p class="text-xs text-slate-300 mt-1 leading-relaxed">
-                Antes de o bloco fechar (a cada 12s), a transação da Chainlink fica visível na <strong>Mempool</strong> (sala de espera). É aí que surge o <strong>OEV (Oracle Extractable Value)</strong>.
-              </p>
-            </div>
-
-            <div class="bg-amber-950/30 border border-amber-500/40 rounded-xl p-4">
-              <h3 class="text-sm font-bold text-white flex items-center gap-2">
-                <i class="fa-solid fa-robot text-amber-400"></i> 3. Como o Bot lucra (Back-running)?
-              </h3>
-              <p class="text-xs text-slate-200 mt-1 leading-relaxed">
-                O Bot vê na Mempool que a Chainlink vai atualizar o ETH para <strong>$2.390</strong> (liberando liquidações). Ele paga uma <strong>gorjeta alta de Gas</strong> ao validador para colar sua transação na posição <strong>#11</strong> (imediatamente após a Chainlink)!
-              </p>
-            </div>
-          </div>
-
-          <!-- Right Side: Enriched Visual Block Queue Table -->
-          <div class="lg:col-span-7 bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between">
-            <div class="flex items-center justify-between mb-3">
-              <span class="font-mono-code text-xs text-cyan-400 font-bold">FILA DE EXECUÇÃO DENTRO DO BLOCO #19.500.000</span>
-              <span class="text-xs bg-slate-800 text-slate-300 px-2.5 py-0.5 rounded font-mono-code">Execução de cima p/ baixo</span>
-            </div>
-
-            <div class="overflow-hidden rounded-xl border border-slate-800">
-              <table class="w-full text-left border-collapse text-xs">
-                <thead>
-                  <tr class="bg-slate-950 text-slate-400 font-mono-code border-b border-slate-800">
-                    <th class="py-3 px-3">Posição</th>
-                    <th class="py-3 px-3">Quem Envia</th>
-                    <th class="py-3 px-3">Preço Lido</th>
-                    <th class="py-3 px-3">O que acontece</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-800/80">
-                  <tr class="bg-slate-900/60">
-                    <td class="py-3.5 px-3 font-mono-code text-slate-300">#09</td>
-                    <td class="py-3.5 px-3 font-medium text-white">Pessoa 1 (Operação DeFi)</td>
-                    <td class="py-3.5 px-3 font-mono-code font-bold text-slate-200">$2.408 <span class="text-[10px] text-slate-400">(Antigo)</span></td>
-                    <td class="py-3.5 px-3 text-slate-300">Executou 1 linha antes do oráculo atualizar.</td>
-                  </tr>
-                  <tr class="bg-blue-950/60 border-l-4 border-l-cyan-400">
-                    <td class="py-3.5 px-3 font-mono-code font-bold text-cyan-300">#10</td>
-                    <td class="py-3.5 px-3 font-bold text-cyan-300">Nó Líder Chainlink (OCR)</td>
-                    <td class="py-3.5 px-3 font-mono-code font-bold text-cyan-300">Grava $2.390</td>
-                    <td class="py-3.5 px-3 text-cyan-100">Contrato valida mediana e altera o estado!</td>
-                  </tr>
-                  <tr class="bg-amber-950/50 border-l-4 border-l-amber-400">
-                    <td class="py-3.5 px-3 font-mono-code font-bold text-amber-300">#11</td>
-                    <td class="py-3.5 px-3 font-bold text-amber-300">Bot de OEV (Pagou +Gas)</td>
-                    <td class="py-3.5 px-3 font-mono-code font-bold text-amber-300">$2.390 <span class="text-[10px]">(Novo)</span></td>
-                    <td class="py-3.5 px-3 text-amber-100">Entra colado na #10 e liquida empréstimo com bônus!</td>
-                  </tr>
-                  <tr class="bg-slate-900/60">
-                    <td class="py-3.5 px-3 font-mono-code text-slate-300">#12</td>
-                    <td class="py-3.5 px-3 font-medium text-white">Pessoa 2 (Mesmo Bloco)</td>
-                    <td class="py-3.5 px-3 font-mono-code font-bold text-emerald-400">$2.390 <span class="text-[10px]">(Novo)</span></td>
-                    <td class="py-3.5 px-3 text-slate-300">Opera normalmente já com o preço atualizado.</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <p class="text-[11px] text-slate-400 mt-3 font-mono-code">
-              Conclusão: Duas pessoas no mesmo bloco só recebem valores diferentes se a transação da Chainlink ficar exatamente entre elas!
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <!-- ==========================================
-           SLIDE 12: COMO A CHAINLINK GANHA DINHEIRO & OUTROS ORÁCULOS (EX: PYTH)
-           ========================================== -->
-      <section class="slide-view flex-col justify-between h-full" data-slide="11" data-steps="1">
-        <div>
-          <span class="font-mono-code text-xs text-cyan-400 uppercase tracking-widest">11 • Modelo de Negócios e Concorrentes</span>
-          <h2 class="text-3xl md:text-4xl font-bold text-white mt-1">Como a Chainlink ganha dinheiro? E os outros Oráculos?</h2>
-          <p class="text-slate-400 text-sm md:text-base mt-1">
-            Entendendo a sustentabilidade do ecossistema e como outras empresas abordam o problema de forma diferente.
-          </p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto items-stretch">
-          <!-- Card 1: How Chainlink Makes Money -->
-          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between mb-4">
-                <span class="px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-300 font-mono-code text-xs font-bold">MODELO DE RECEITA</span>
-                <i class="fa-solid fa-sack-dollar text-emerald-400 text-xl"></i>
-              </div>
-              <h3 class="text-xl font-bold text-white mb-3">A consulta ao Oráculo de Preço é "de graça"?</h3>
-              <p class="text-xs md:text-sm text-slate-300 leading-relaxed mb-4">
-                Para os desenvolvedores e usuários que leem os pares principais (como ETH/USD), <strong>a leitura no contrato é aberta e gratuita</strong> (bem público subsidiado pelas redes).
-              </p>
-              <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-2.5 text-xs text-slate-300">
-                <strong class="text-emerald-400 block text-sm">De onde vem o faturamento da Chainlink?</strong>
-                <p>
-                  Ela monetiza principalmente prestando <strong>outras funções e serviços de infraestrutura</strong> na mesma rede de nós (como sorteio de números aleatórios verificáveis para jogos/sorteios, comunicação entre blockchains diferentes e auditoria de reservas), além de patrocínios de novas redes.
-                </p>
-              </div>
-            </div>
-            <div class="mt-4 pt-3 border-t border-slate-800 text-xs text-slate-400 font-mono-code">
-              Os feeds de preço atraem o ecossistema DeFi; os demais produtos geram receita por uso.
-            </div>
-          </div>
-
-          <!-- Card 2: Other Oracles (Pyth Network example) -->
-          <div class="bg-slate-900 border border-purple-500/30 rounded-2xl p-6 flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between mb-4">
-                <span class="px-3 py-1 rounded-full bg-purple-500/15 text-purple-300 font-mono-code text-xs font-bold">OUTRAS ARQUITETURAS • EX: PYTH NETWORK</span>
-                <i class="fa-solid fa-bolt text-purple-400 text-xl"></i>
-              </div>
-              <h3 class="text-xl font-bold text-white mb-3">Todo oráculo usa 3 camadas igual à Chainlink?</h3>
-              <p class="text-xs md:text-sm text-slate-300 leading-relaxed mb-4">
-                Não! Concorrentes importantes como a <strong>Pyth Network</strong> trabalham com uma mecânica diferente focada em corretoras de alta frequência:
-              </p>
-              <ul class="space-y-2.5 text-xs text-slate-300">
-                <li class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex items-start gap-2.5">
-                  <i class="fa-solid fa-building-columns text-purple-400 mt-0.5"></i>
-                  <span><strong>Direto da Fonte (Sem Agregador Nível 2):</strong> As próprias corretoras e formadores de mercado (Binance, OKX, Jane Street) rodam os nós e assinam seus preços diretamente.</span>
-                </li>
-                <li class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex items-start gap-2.5">
-                  <i class="fa-solid fa-hand-point-down text-cyan-400 mt-0.5"></i>
-                  <span><strong>Atualização sob Demanda (Pull):</strong> Atualiza a cada 400ms fora da rede e só grava na blockchain no segundo exato em que alguém faz uma operação.</span>
-                </li>
-              </ul>
-            </div>
-            <div class="mt-4 pt-3 border-t border-slate-800 text-xs text-purple-300 font-mono-code">
-              Chainlink = Máxima robustez (Push) • Pyth = Alta velocidade direto da fonte (Pull).
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ==========================================
-           SLIDE 13: REVISÃO GERAL E DÚVIDAS DA AULA
-           ========================================== -->
-      <section class="slide-view flex-col justify-between h-full" data-slide="12" data-steps="1">
-        <div class="text-center max-w-3xl mx-auto">
-          <span class="font-mono-code text-xs text-cyan-400 uppercase tracking-widest">12 • Fechamento e Revisão Completa</span>
-          <h2 class="text-4xl md:text-5xl font-bold text-white mt-2">Resumo da Jornada do Dado</h2>
-          <p class="text-slate-400 text-sm md:text-base mt-2">
-            De uma ordem de compra em uma corretora até a variável lida pelo Smart Contract na Ethereum:
-          </p>
-        </div>
-
-        <!-- Summary Pipeline Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-5 gap-3 my-auto">
-          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 text-center">
-            <span class="font-mono-code text-xs text-cyan-400 block mb-1">PASSO 1</span>
-            <h4 class="font-bold text-white text-sm">Trava HTTP & Sandbox</h4>
-            <p class="text-xs text-slate-400 mt-1">A Blockchain é isolada e determinística; precisa do Oráculo.</p>
-          </div>
-          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 text-center">
-            <span class="font-mono-code text-xs text-cyan-400 block mb-1">PASSO 2</span>
-            <h4 class="font-bold text-white text-sm">Nível 1 ➔ Nível 2</h4>
-            <p class="text-xs text-slate-400 mt-1">Corretoras geram dados; Agregadores aplicam VWAP, Profundidade e Anti-Wash.</p>
-          </div>
-          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 text-center">
-            <span class="font-mono-code text-xs text-cyan-400 block mb-1">PASSO 3</span>
-            <h4 class="font-bold text-white text-sm">Nível 3 & OCR P2P</h4>
-            <p class="text-xs text-slate-400 mt-1">21-31 nós conversam P2P off-chain; Líder reúne assinaturas em 1 array.</p>
-          </div>
-          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 text-center">
-            <span class="font-mono-code text-xs text-cyan-400 block mb-1">PASSO 4</span>
-            <h4 class="font-bold text-white text-sm">Smart Contract</h4>
-            <p class="text-xs text-slate-400 mt-1">Valida assinaturas e ordem, extrai a Mediana (a cada 0,5% ou 60m).</p>
-          </div>
-          <div class="bg-slate-900 border border-amber-500/40 rounded-xl p-4 text-center">
-            <span class="font-mono-code text-xs text-amber-400 block mb-1">PASSO 5</span>
-            <h4 class="font-bold text-white text-sm">Fila do Bloco & OEV</h4>
-            <p class="text-xs text-slate-400 mt-1">Bots monitoram a Mempool e pagam Gas para entrar logo após o oráculo.</p>
-          </div>
-        </div>
-
-        <div class="bg-gradient-to-r from-blue-950/80 via-slate-900 to-blue-950/80 border border-blue-500/40 rounded-2xl p-6 text-center max-w-2xl mx-auto w-full">
-          <h3 class="text-2xl font-bold text-white">Dúvidas ou Perguntas?</h3>
-          <p class="text-xs md:text-sm text-cyan-300 mt-1">
-            Use os botões abaixo ou as setas do teclado para revisitar qualquer etapa da simulação.
-          </p>
-        </div>
-      </section>
-
+    <div id="slides-root" class="w-full max-w-7xl h-full max-h-[700px] flex flex-col justify-center">
+      <!-- Slides mounted dynamically via slides/js/app.js -->
     </div>
   </main>
 
-  <!-- TEACHER SPEAKER NOTES DRAWER (COLA DO PROFESSOR) -->
-  <aside id="teacher-drawer" class="hidden fixed bottom-16 left-6 right-6 max-w-4xl mx-auto z-30 bg-slate-900/95 border-2 border-amber-500/50 rounded-2xl p-5 shadow-2xl backdrop-blur-md">
-    <div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-2">
-      <div class="flex items-center gap-2 text-amber-400 font-mono-code text-xs font-bold uppercase">
+  <!-- TEACHER SPEAKER NOTES DRAWER (COLA DO PROFESSOR — AZUL DISCRETO) -->
+  <aside
+    id="teacher-drawer"
+    hidden
+    class="discrete-panel fixed bottom-16 left-6 right-6 max-w-4xl mx-auto z-30 bg-slate-950/95 border border-blue-500/35 rounded-2xl p-5 shadow-2xl shadow-blue-950/40 backdrop-blur-md"
+  >
+    <div class="flex items-center justify-between border-b border-blue-900/40 pb-2 mb-2">
+      <div class="flex items-center gap-2 text-blue-400 font-mono-code text-xs font-bold uppercase">
         <i class="fa-solid fa-microphone-lines"></i>
-        <span id="notes-title">Roteiro de Fala do Professor — Slide Atual</span>
+        <span id="notes-title">Cola do Professor — Slide Atual</span>
       </div>
-      <button onclick="toggleTeacherNotes()" class="text-slate-400 hover:text-white text-xs">
+      <button
+        type="button"
+        onclick="OracleDeck.toggleTeacherNotes()"
+        class="text-slate-400 hover:text-blue-200 text-xs transition"
+        aria-label="Fechar Cola do Professor"
+      >
         <i class="fa-solid fa-xmark text-base"></i>
       </button>
     </div>
-    <p id="notes-content" class="text-sm text-slate-200 leading-relaxed">
-      <!-- Populated dynamically via JS -->
-    </p>
+    <p id="notes-content" class="text-sm text-slate-200 leading-relaxed"></p>
   </aside>
 
   <!-- BOTTOM NAVIGATION CONTROLS -->
   <footer class="relative z-20 flex items-center justify-between px-6 py-3 border-t border-slate-800/80 bg-slate-950/80 backdrop-blur-md">
     <div class="flex items-center gap-3">
       <span id="slide-counter" class="font-mono-code text-xs font-semibold text-cyan-400 bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-800">
-        Slide 01 / 13
+        Slide 01 / 12
       </span>
-      <span id="step-indicator" class="hidden font-mono-code text-xs text-amber-300 bg-amber-500/10 px-2.5 py-1 rounded-lg border border-amber-500/30">
-        Passo 1 / 3
+      <span id="step-indicator" class="hidden font-mono-code text-xs text-cyan-300 bg-blue-500/15 px-2.5 py-1 rounded-lg border border-blue-500/30">
+        Visão Geral (1/9)
       </span>
     </div>
 
     <div class="flex items-center gap-3">
-      <button onclick="prevStepOrSlide()" id="btn-prev" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-xs font-semibold text-slate-200 flex items-center gap-2 transition">
+      <button
+        type="button"
+        onclick="OracleDeck.prevStepOrSlide()"
+        id="btn-prev"
+        class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-xs font-semibold text-slate-200 flex items-center gap-2 transition"
+      >
         <i class="fa-solid fa-arrow-left"></i> Anterior
       </button>
-      <button onclick="nextStepOrSlide()" id="btn-next" class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-semibold text-white flex items-center gap-2 shadow-lg shadow-blue-600/30 transition">
+      <button
+        type="button"
+        onclick="OracleDeck.nextStepOrSlide()"
+        id="btn-next"
+        class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-semibold text-white flex items-center gap-2 shadow-lg shadow-blue-600/30 transition"
+      >
         <span>Próximo</span> <i class="fa-solid fa-arrow-right"></i>
       </button>
     </div>
   </footer>
 
-  <!-- PRESENTATION LOGIC & INTERACTIVITY -->
-  <script>
-    const slides = Array.from(document.querySelectorAll('.slide-view'));
-    let currentSlide = 0;
-    let currentSubStep = 0;
+  <!-- MODULAR SCRIPTS -->
+  <script defer src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
 
-    // Teacher Speaking Notes per Slide (and Sub-steps)
-    const teacherNotes = {
-      "0-0": "Comece perguntando à turma se alguém sabe o que é um Oráculo e para que ele serve. Instigue: por que um contrato inteligente na Ethereum não faz simplesmente um requisição HTTP para descobrir o preço do dólar?",
-      "1-0": "Defina o conceito básico: o Oráculo é a ponte que busca dados Off-Chain (fora da rede) e os coloca On-Chain (dentro da blockchain), já que contratos inteligentes são isolados e exigem que todos os computadores leiam o mesmo valor.",
-      "2-0": "Destaque os dois grandes motivos de não existir HTTP na blockchain: 1) A própria estrutura da máquina virtual (Sandbox) bloqueia conexões externas. 2) Mesmo que pudesse, se você e um amigo pesquisarem o dólar com 1 milissegundo de diferença, dará valores diferentes e quebrará o consenso da rede. Clique no botão 'Testar Consulta Simultânea' para mostrar na tela!",
-      "3-0": "Faça a transição importante aqui: explique que até agora falamos do problema geral de qualquer blockchain. A partir de agora, vamos usar a Chainlink como exemplo prático por ser a maior empresa desse ramo (embora existam outras, que comentaremos no final).",
-      "4-0": "Mostre o pipeline animado de 3 camadas da Chainlink no par ETH/USD com mais de 20 fontes: Fontes Brutas (Nível 1), Agregadores (Nível 2) e Nós Operadores na rede de consenso off-chain (Nível 3). Aperte Próximo para focar primeiro no Nível 1.",
-      "4-1": "Aqui fazemos a ponte pelo Nível 1 antes de ir para o 2: explique que o Nível 1 são as corretoras reais (Binance, Coinbase, Uniswap) gerando negócios brutos. Como cada corretora tem seu próprio preço e risco de oscilação, o Nível 2 coleta dezenas delas.",
-      "5-0": "Neste slide único interativo do Nível 2, estamos no Filtro 1 (VWAP - Preço Médio Ponderado por Volume). Mostre as barras: a Binance com $500M de volume domina o peso (82%), impedindo que uma corretora pequena distorça o preço. Aperte Próximo para expandir o Filtro 2 no mesmo slide!",
-      "5-1": "Filtro 2 expandido no mesmo slide: Análise de Profundidade de Livro. Basta uma frase: mede a variabilidade de oferta e demanda por corretora. Se o livro for raso (qualquer compra pequena muda o preço), a corretora perde peso. Aperte Próximo para o Filtro 3!",
-      "5-2": "Filtro 3 expandido: Detecção de Wash Trading. Explique rapidamente que é quando robôs compram e vendem entre si na mesma corretora para inflar o volume artificialmente. Os agregadores detectam e descartam esse volume falso.",
-      "6-0": "Introduza o Nível 3: explique que os Nós Operadores da Chainlink são uma rede de computadores Off-Chain independentes (costuma ter de 21 a 31 nós, exigindo no mínimo 21 para validar). Cada nó pega vários agregadores de Nível 2 e tira sua própria mediana.",
-      "7-0": "Explique o Protocolo OCR: antigamente cada nó enviava uma transação separada E o próprio Smart Contract tinha que organizar os dados e calcular a mediana on-chain (gastando muito mais Gas!). Hoje, no OCR, os nós conversam P2P de graça, elegem um Líder na rodada e mandam só 1 transação.",
-      "8-0": "Mostre o caminho final: os nós assinam suas medianas com suas chaves privadas; o Líder organiza tudo em um array ordenado e manda 1 única transação para a Mempool. O Contrato Agregador verifica as assinaturas, confere a ordenação, tira a mediana de novo e grava o preço no Bloco.",
-      "9-0": "Explique a frequência de consolidação: o disparo acontece por Limiar de Desvio (0,5% de variação no preço) ou por Tempo Máximo de Intervalo (Heartbeat de 60 minutos caso o mercado fique parado).",
-      "10-0": "Lance a pergunta: 'E se duas pessoas fizerem uma operação no mesmo bloco em que o valor é alterado pelo Smart Contract?'. Use os cards à esquerda e a tabela à direita para mostrar a fila: quem vem antes (#09) lê o valor antigo; na #10 a Chainlink atualiza; e na #11 entra o Bot de OEV pagando mais Gas para vir logo depois e lucrar com liquidações!",
-      "11-0": "Fechamento sobre mercado: 1) A Chainlink fornece a leitura dos oráculos principais 'de graça' como bem público e ganha dinheiro principalmente com outras funções que a rede dela presta (como sorteio de números aleatórios e pontes entre redes). 2) Cite que existem outras empresas como a Pyth Network, que pega dados direto com as corretoras em milissegundos.",
-      "12-0": "Slide final de revisão dos 5 passos da aula e abertura para perguntas dos alunos!"
-    };
+  <!-- Data -->
+  <script defer src="slides/js/data/metrics.js"></script>
+  <script defer src="slides/js/data/roadmapData.js"></script>
+  <script defer src="slides/js/data/teacherNotes.js"></script>
 
-    function initDots() {
-      const container = document.getElementById('slide-Dots');
-      container.innerHTML = '';
-      slides.forEach((_, idx) => {
-        const btn = document.createElement('button');
-        btn.onclick = () => goToSlide(idx, 0);
-        btn.className = `h-2 rounded-full transition-all duration-300 ${idx === currentSlide ? 'w-7 bg-cyan-400' : 'w-2 bg-slate-700 hover:bg-slate-500'}`;
-        btn.title = `Ir para Slide ${idx + 1}`;
-        container.appendChild(btn);
-      });
-    }
+  <!-- Components -->
+  <script defer src="slides/js/components/ibcKnot3D.js"></script>
+  <script defer src="slides/js/components/oracleCube3D.js"></script>
+  <script defer src="slides/js/components/flowPathAnimator.js"></script>
+  <script defer src="slides/js/components/httpSimulator.js"></script>
+  <script defer src="slides/js/components/pipelineStage.js"></script>
 
-    function updateSubStepUI() {
-      // Slide 5 (index 4): Pipeline Overview (0) vs Level 1 Zoom (1)
-      if (currentSlide === 4) {
-        const d0 = document.getElementById('s4-detail-0');
-        const d1 = document.getElementById('s4-detail-1');
-        const b0 = document.getElementById('s4-btn-0');
-        const b1 = document.getElementById('s4-btn-1');
-        const cardL1 = document.getElementById('s4-card-l1');
+  <!-- Slides -->
+  <script defer src="slides/js/slides/slide01Cover.js"></script>
+  <script defer src="slides/js/slides/slide02Roadmap.js"></script>
+  <script defer src="slides/js/slides/slide03WhatIsOracle.js"></script>
+  <script defer src="slides/js/slides/slide04WhyNoHttp.js"></script>
+  <script defer src="slides/js/slides/slide05Ecosystem.js"></script>
+  <script defer src="slides/js/slides/slide06ChainlinkPipeline.js"></script>
+  <script defer src="slides/js/slides/slide07OcrProtocol.js"></script>
+  <script defer src="slides/js/slides/slide08LeaderToContract.js"></script>
+  <script defer src="slides/js/slides/slide09Triggers.js"></script>
+  <script defer src="slides/js/slides/slide10BlockOrderOev.js"></script>
+  <script defer src="slides/js/slides/slide11BusinessAndOthers.js"></script>
+  <script defer src="slides/js/slides/slide12Summary.js"></script>
 
-        if (currentSubStep === 0) {
-          d0.classList.remove('hidden');
-          d1.classList.add('hidden');
-          b0.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white transition";
-          b1.className = "px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition";
-          cardL1.classList.remove('ring-4', 'ring-cyan-400/50', 'scale-[1.03]');
-        } else {
-          d0.classList.add('hidden');
-          d1.classList.remove('hidden');
-          b1.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-cyan-500 text-slate-950 transition";
-          b0.className = "px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition";
-          cardL1.classList.add('ring-4', 'ring-cyan-400/50', 'scale-[1.03]');
-        }
-      }
-
-      // Slide 6 (index 5): 3 Filters of Level 2 (0 = VWAP, 1 = Depth, 2 = Wash Trading)
-      if (currentSlide === 5) {
-        for (let i = 0; i < 3; i++) {
-          const panel = document.getElementById(`s5-panel-${i}`);
-          const tab = document.getElementById(`s5-tab-${i}`);
-          if (i === currentSubStep) {
-            panel.classList.remove('hidden');
-            tab.className = "text-left p-4 rounded-xl border-2 transition-all duration-300 bg-blue-950/60 border-cyan-400 shadow-lg scale-[1.02]";
-          } else {
-            panel.classList.add('hidden');
-            tab.className = "text-left p-4 rounded-xl border transition-all duration-300 bg-slate-900/80 border-slate-800 opacity-65 hover:opacity-100";
-          }
-        }
-      }
-    }
-
-    function updateUI() {
-      slides.forEach((s, idx) => {
-        if (idx === currentSlide) {
-          s.classList.add('active');
-        } else {
-          s.classList.remove('active');
-        }
-      });
-
-      const totalSteps = parseInt(slides[currentSlide].dataset.steps || "1", 10);
-      const stepBadge = document.getElementById('step-indicator');
-      if (totalSteps > 1) {
-        stepBadge.classList.remove('hidden');
-        stepBadge.textContent = `Etapa Interna ${currentSubStep + 1} / ${totalSteps}`;
-      } else {
-        stepBadge.classList.add('hidden');
-      }
-
-      document.getElementById('slide-counter').textContent = `Slide ${String(currentSlide + 1).padStart(2, '0')} / ${slides.length}`;
-      document.getElementById('btn-prev').disabled = (currentSlide === 0 && currentSubStep === 0);
-
-      const nextBtn = document.getElementById('btn-next');
-      if (currentSlide === slides.length - 1 && currentSubStep === totalSteps - 1) {
-        nextBtn.innerHTML = `<span>Reiniciar</span> <i class="fa-solid fa-rotate-left"></i>`;
-      } else if (currentSubStep < totalSteps - 1) {
-        nextBtn.innerHTML = `<span>Próximo Passo</span> <i class="fa-solid fa-Sparkles"></i> <i class="fa-solid fa-chevron-right"></i>`;
-      } else {
-        nextBtn.innerHTML = `<span>Próximo Slide</span> <i class="fa-solid fa-arrow-right"></i>`;
-      }
-
-      updateSubStepUI();
-      initDots();
-
-      // Update Teacher Notes
-      const noteKey = `${currentSlide}-${currentSubStep}`;
-      const fallbackKey = `${currentSlide}-0`;
-      document.getElementById('notes-title').textContent = `Cola do Professor — Slide ${currentSlide + 1} (Passo ${currentSubStep + 1})`;
-      document.getElementById('notes-content').textContent = teacherNotes[noteKey] || teacherNotes[fallbackKey] || "";
-    }
-
-    function setSubStep(stepIndex) {
-      currentSubStep = stepIndex;
-      updateUI();
-    }
-
-    function goToSlide(index, subStep = 0) {
-      currentSlide = Math.max(0, Math.min(slides.length - 1, index));
-      currentSubStep = subStep;
-      updateUI();
-    }
-
-    function nextStepOrSlide() {
-      const totalSteps = parseInt(slides[currentSlide].dataset.steps || "1", 10);
-      if (currentSubStep < totalSteps - 1) {
-        currentSubStep++;
-        updateUI();
-      } else if (currentSlide < slides.length - 1) {
-        currentSlide++;
-        currentSubStep = 0;
-        updateUI();
-      } else {
-        goToSlide(0, 0);
-      }
-    }
-
-    function prevStepOrSlide() {
-      if (currentSubStep > 0) {
-        currentSubStep--;
-        updateUI();
-      } else if (currentSlide > 0) {
-        currentSlide--;
-        const prevTotalSteps = parseInt(slides[currentSlide].dataset.steps || "1", 10);
-        currentSubStep = prevTotalSteps - 1;
-        updateUI();
-      }
-    }
-
-    // Interactive HTTP Simulator on Slide 3
-    function simulateHttpCall() {
-      const base = 5.79 + Math.random() * 0.03;
-      const val1 = base.toFixed(4).replace('.', ',');
-      const val2 = (base + 0.0004 + Math.random() * 0.0012).toFixed(4).replace('.', ',');
-      const ms = Math.floor(100 + Math.random() * 800);
-
-      document.getElementById('sim-val-1').textContent = `R$ ${val1}`;
-      document.getElementById('sim-val-2').textContent = `R$ ${val2}`;
-      document.getElementById('sim-time-1').textContent = `GET api.cambio/usd • t = 14:00:01.${ms}s`;
-      document.getElementById('sim-time-2').textContent = `GET api.cambio/usd • t = 14:00:01.${ms + 1}s (+1ms)`;
-      document.getElementById('sim-diff-1').textContent = val1;
-      document.getElementById('sim-diff-2').textContent = val2;
-    }
-
-    function toggleTeacherNotes() {
-      const drawer = document.getElementById('teacher-drawer');
-      drawer.classList.toggle('hidden');
-    }
-
-    function toggleFullScreen() {
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(() => {});
-      } else {
-        document.exitFullscreen().catch(() => {});
-      }
-    }
-
-    // Keyboard Navigation
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowRight' || e.key === ' ') {
-        e.preventDefault();
-        nextStepOrSlide();
-      } else if (e.key === 'ArrowLeft') {
-        e.preventDefault();
-        prevStepOrSlide();
-      } else if (e.key.toLowerCase() === 'n') {
-        toggleTeacherNotes();
-      } else if (e.key.toLowerCase() === 'f') {
-        toggleFullScreen();
-      }
-    });
-
-    window.onload = () => {
-      updateUI();
-    };
-  </script>
+  <!-- App Controller -->
+  <script defer src="slides/js/app.js"></script>
 </body>
 </html>
